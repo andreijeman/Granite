@@ -1,12 +1,11 @@
 using System.Drawing;
 using Granite.Components;
-using Granite.Helpers;
 
 namespace Granite.Utilities;
 
 public static class ModelBuilder
 {
-    public static void SculptRectangle(Model model, Vector2 position, Vector2 size, Model.Cell cell)
+    public static void SculptRectangle(this Model model, Vector2 position, Vector2 size, Model.Cell cell)
     {
         for (int i = 0; i < size.Y; i++)
         {
@@ -42,6 +41,44 @@ public static class ModelBuilder
         
         cell.Character = border.LeftBottom;
         model.Map[position.Y + size.Y - 1, position.X] = cell;
+    }
+
+    public static void SculptBorder(this Model model, Model.Cell cell, Assets.Border border)
+    {
+        model.SculptBorder(Vector2.New(0, 0), model.Size, cell, border);
+    }
+
+    public static void SculptText(this Model model, Vector2 position, Vector2 size, Model.Cell cell, string text)
+    {
+        int i = 0, x = 0, y = 0, length = text.Length;
         
+        while (i < length)
+        {
+            if (x >= size.X)
+            {
+                y++;
+                x = 0;
+            }
+            
+            if (y >= size.Y) break;
+
+            if (text[i] != '\n')
+            {
+                cell.Character = text[i];
+                model.Map[position.Y + y, position.X + x] = cell;
+            }
+            else 
+            { 
+                x = -1; 
+                y++;
+            }
+
+            i++; x++;
+        }
+    }
+
+    public static void SculptText(this Model model, Model.Cell cell, string text)
+    {
+        model.SculptText(Vector2.New(1, 1), model.Size - Vector2.New(2, 2), cell, text);
     }
 }

@@ -1,6 +1,4 @@
-using Microsoft.VisualBasic.CompilerServices;
-
-namespace Granite.Components;
+namespace Granite.Utilities;
 
 public struct Vector2
 {

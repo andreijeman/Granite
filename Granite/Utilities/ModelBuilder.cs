@@ -1,22 +1,21 @@
-using System.Drawing;
 using Granite.Components;
 
 namespace Granite.Utilities;
 
 public static class ModelBuilder
 {
-    public static void SculptRectangle(this Model model, Vector2 position, Vector2 size, Model.Cell cell)
+    public static void SculptRectangle(this Cell[,] model, Vector2 position, Vector2 size, Cell cell)
     {
         for (int i = 0; i < size.Y; i++)
         {
             for (int j = 0; j < size.X; j++)
             {
-                model.Map[position.Y + i, position.X + j] = cell;
+                model[position.Y + i, position.X + j] = cell;
             }
         }
     }
     
-    public static void SculptBorder(this Model model, Vector2 position, Vector2 size, Model.Cell cell, Assets.Border border)
+    public static void SculptBorder(this Cell[,] model, Vector2 position, Vector2 size, Cell cell, Assets.Border border)
     {
         cell.Character = border.Left;
         SculptRectangle(model, new Vector2(position.X, position.Y + 1), new Vector2(1, size.Y - 2), cell);        
@@ -31,24 +30,19 @@ public static class ModelBuilder
         SculptRectangle(model, new Vector2(position.X + 1, position.Y + size.Y - 1), new Vector2(size.X - 2, 1), cell);
         
         cell.Character = border.LeftTop;
-        model.Map[position.Y, position.X] = cell;
+        model[position.Y, position.X] = cell;
         
         cell.Character = border.RightTop;
-        model.Map[position.Y, position.X + size.X - 1] = cell;
+        model[position.Y, position.X + size.X - 1] = cell;
         
         cell.Character = border.RightBottom;
-        model.Map[position.Y + size.Y - 1, position.X + size.X - 1] = cell;
+        model[position.Y + size.Y - 1, position.X + size.X - 1] = cell;
         
         cell.Character = border.LeftBottom;
-        model.Map[position.Y + size.Y - 1, position.X] = cell;
+        model[position.Y + size.Y - 1, position.X] = cell;
     }
 
-    public static void SculptBorder(this Model model, Model.Cell cell, Assets.Border border)
-    {
-        model.SculptBorder(Vector2.New(0, 0), model.Size, cell, border);
-    }
-
-    public static void SculptText(this Model model, Vector2 position, Vector2 size, Model.Cell cell, string text)
+    public static void SculptText(this Cell[,] model, Vector2 position, Vector2 size, Cell cell, string text)
     {
         int i = 0, x = 0, y = 0, length = text.Length;
         
@@ -65,7 +59,7 @@ public static class ModelBuilder
             if (text[i] != '\n')
             {
                 cell.Character = text[i];
-                model.Map[position.Y + y, position.X + x] = cell;
+                model[position.Y + y, position.X + x] = cell;
             }
             else 
             { 
@@ -76,9 +70,19 @@ public static class ModelBuilder
             i++; x++;
         }
     }
-
-    public static void SculptText(this Model model, Model.Cell cell, string text)
+    
+    public static void SculptChessBoard(this Cell[,] model, Vector2 position, Vector2 size, ConsoleColor color1, ConsoleColor color2)
     {
-        model.SculptText(Vector2.New(1, 1), model.Size - Vector2.New(2, 2), cell, text);
+        ConsoleColor color;
+        for (int y = 0; y < size.Y; y++)
+        {
+            for (int x = 0; x < size.X; x++)
+            {
+                color = (x + y) % 2 == 0 ? color1 : color2; 
+                model[y, x].Character = ' ';
+                model[y, x].ForegroundColor = color;
+                model[y, x].BackgroundColor = color;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 using Granite.Components;
+using Granite.Utilities.Math;
 
 namespace Granite.Utilities;
 

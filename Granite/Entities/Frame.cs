@@ -1,6 +1,3 @@
-using System.Collections.Specialized;
-using Granite.Components;
-using Granite.Utilities;
 using Granite.Utilities.Math;
 
 namespace Granite.Entities;
@@ -60,8 +57,6 @@ public class Frame : Entity
                 }
                 
                 sections = temp;
-                
-                enumerator.MoveNext();
             }
 
             if (sections.Count > 0) return true;

@@ -1,4 +1,4 @@
-namespace Granite.Utilities;
+namespace Granite.Utilities.Math;
 
 public struct Rect
 {

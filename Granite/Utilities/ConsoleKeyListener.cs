@@ -1,5 +1,3 @@
-using Granite.Interfaces;
-
 namespace Granite.Utilities;
 
 public static class ConsoleKeyListener

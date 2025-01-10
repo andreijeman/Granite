@@ -1,5 +1,3 @@
-using Granite.Interfaces;
-
 namespace Granite.Components;
 
 public class Controller

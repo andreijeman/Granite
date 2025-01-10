@@ -22,4 +22,9 @@ public struct Cell
     {
         return new Cell(' ', foregroundColor, backgroundColor);
     }
+    
+    public static Cell New(ConsoleColor color)
+    {
+        return new Cell(' ', color, color);
+    }
 }

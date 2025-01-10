@@ -18,7 +18,7 @@ public static class Terminal
             
             for (int y = part.Pos.Y; y < part.Pos.Y + part.Size.Y; y++)
             {
-                Console.SetCursorPosition(absolutePosition.X, absolutePosition.Y++ );
+                Console.SetCursorPosition(absolutePosition.X, absolutePosition.Y);
                 for (int x = part.Pos.X; x < part.Pos.X + part.Size.X; x++)
                 {
                     if (lastFgColor != sender.Model[y, x].ForegroundColor)
@@ -35,6 +35,8 @@ public static class Terminal
                 
                     Console.Write(sender.Model[y, x].Character);
                 }
+
+                absolutePosition.Y++;
             }
         }
         finally

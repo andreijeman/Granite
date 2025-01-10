@@ -4,18 +4,10 @@ public static class RectUtils
 { 
     public static bool Intersects(this Rect rect, Rect rect2)
     {
-        return
-            rect.Contains(rect2.Pos) || 
-            rect.Contains(Vector2.New(rect2.Pos.X + rect2.Size.X - 1, rect2.Pos.Y)) ||
-            rect.Contains(rect2.Pos + rect2.Size - Vector2.New(1, 1)) ||
-            rect.Contains(Vector2.New(rect2.Pos.X, rect2.Pos.Y + rect2.Size.Y - 1));
-    }
-
-    public static bool Contains(this Rect rect, Vector2 point)
-    {
-        return        
-            point.X >= rect.Pos.X && point.X < rect.Pos.X + rect.Size.X && 
-            point.Y >= rect.Pos.Y && point.Y < rect.Pos.Y + rect.Size.Y;
+        return rect.Pos.X < rect2.Pos.X + rect2.Size.X &&
+               rect.Pos.X + rect.Size.X > rect2.Pos.X &&
+               rect.Pos.Y < rect2.Pos.Y + rect2.Size.Y &&
+               rect.Pos.Y + rect.Size.Y > rect2.Pos.Y;
     }
     
     public static bool TryGetIntersection(this Rect rect, Rect rect2, out Rect result)

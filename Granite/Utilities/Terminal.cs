@@ -1,4 +1,5 @@
 using Granite.Components;
+using Granite.Entities;
 
 namespace Granite.Utilities;
 
@@ -6,7 +7,7 @@ public static class Terminal
 {
     private static SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     
-    public static void PrintModelPart(Cell[,] model, Rect part, Vector2 position)
+    public static void PrintEntityModelPart(Entity entity, Rect part, Vector2 absolutePosition)
     {
         _semaphore.Wait();
 
@@ -14,25 +15,25 @@ public static class Terminal
         {
             ConsoleColor lastFgColor = ConsoleColor.Black;
             ConsoleColor lastBgColor = ConsoleColor.Black;
-        
+            
             for (int y = part.Pos.Y; y < part.Pos.Y + part.Size.Y; y++)
             {
-                Console.SetCursorPosition(position.X + part.Pos.X, position.Y + y );
+                Console.SetCursorPosition(absolutePosition.X, absolutePosition.Y++ );
                 for (int x = part.Pos.X; x < part.Pos.X + part.Size.X; x++)
                 {
-                    if (lastFgColor != model[y, x].ForegroundColor)
+                    if (lastFgColor != entity.Model[y, x].ForegroundColor)
                     {
-                        lastFgColor = model[y, x].ForegroundColor;
+                        lastFgColor = entity.Model[y, x].ForegroundColor;
                         Console.ForegroundColor = lastFgColor;
                     }
                 
-                    if (lastBgColor != model[y, x].BackgroundColor)
+                    if (lastBgColor != entity.Model[y, x].BackgroundColor)
                     {
-                        lastBgColor = model[y, x].BackgroundColor;
+                        lastBgColor = entity.Model[y, x].BackgroundColor;
                         Console.BackgroundColor = lastBgColor;
                     }
                 
-                    Console.Write(model[y, x].Character);
+                    Console.Write(entity.Model[y, x].Character);
                 }
             }
         }
@@ -42,11 +43,11 @@ public static class Terminal
         }
     }
 
-    public static void PrintModelParts(Cell[,] model, List<Rect> parts, Vector2 position)
+    public static void PrintEntityModelParts(Entity entity, List<Rect> parts, Vector2 absolutePosition)
     {
         foreach (Rect part in parts)
         {
-            PrintModelPart(model, part, position);
+            PrintEntityModelPart(entity, part, absolutePosition);
         }
     }
 }

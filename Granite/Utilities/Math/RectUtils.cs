@@ -1,7 +1,4 @@
-using System.ComponentModel.Design;
-using Granite.Components;
-
-namespace Granite.Utilities;
+namespace Granite.Utilities.Math;
 
 public static class RectUtils
 { 
@@ -10,7 +7,7 @@ public static class RectUtils
         return
             rect.Contains(rect2.Pos) || 
             rect.Contains(Vector2.New(rect2.Pos.X + rect2.Size.X - 1, rect2.Pos.Y)) ||
-            rect.Contains(Vector2.New(rect2.Pos.X + rect2.Size.X - 1, rect2.Pos.Y + rect2.Pos.Y - 1)) ||
+            rect.Contains(rect2.Pos + rect2.Size - Vector2.New(1, 1)) ||
             rect.Contains(Vector2.New(rect2.Pos.X, rect2.Pos.Y + rect2.Size.Y - 1));
     }
 
@@ -27,12 +24,11 @@ public static class RectUtils
         
         if (rect.Intersects(rect2))
         {
-            
-            result.Pos.X = rect.Pos.X > rect2.Pos.X ? rect.Pos.X : rect2.Pos.X;
-            result.Pos.Y = rect.Pos.Y > rect2.Pos.Y ? rect.Pos.Y : rect2.Pos.Y;
+            result.Pos.X = System.Math.Max(rect.Pos.X, rect2.Pos.X);
+            result.Pos.Y = System.Math.Max(rect.Pos.Y, rect2.Pos.Y);
 
-            result.Size.X = rect.Pos.X + rect.Size.X < rect2.Pos.X + rect2.Size.X ? rect.Size.X : rect2.Size.X;
-            result.Size.X = rect.Pos.Y + rect.Size.Y < rect2.Pos.Y + rect2.Size.Y ? rect.Size.Y : rect2.Size.Y;
+            result.Size.X = System.Math.Min(rect.Pos.X + rect.Size.X, rect2.Pos.X + rect2.Size.X) - result.Pos.X;
+            result.Size.Y = System.Math.Min(rect.Pos.Y + rect.Size.Y, rect2.Pos.Y + rect2.Size.Y) - result.Pos.Y;
 
             return true;
         }
@@ -81,6 +77,17 @@ public static class RectUtils
                 section.Pos.X = i1.X;
                 section.Pos.Y = r1.Y;
                 section.Size.X = inter.Size.X;
+                section.Size.Y = i1.Y - r1.Y;
+                
+                results.Add(section);
+            }
+            
+            // Bottom section
+            if (r2.Y > i2.Y)
+            {
+                section.Pos.X = i1.X;
+                section.Pos.Y = i2.Y + 1;
+                section.Size.X = inter.Size.X;
                 section.Size.Y = r2.Y - i2.Y;
                 
                 results.Add(section);
@@ -118,18 +125,20 @@ public static class RectUtils
             // RightTop section
             if (r2.X > i2.X && r1.Y < i1.Y)
             {
-                section.Pos.X = r2.X;
+                section.Pos.X = i2.X + 1;
                 section.Pos.Y = r1.Y;
                 section.Size.X = r2.X - i2.X;
                 section.Size.Y = i1.Y - r1.Y;
                 
                 results.Add(section);
             }
-                
-            return true;
+
+            if (results.Count > 0) return true;
+            return false;
         }
         
-        return false;
+        results.Add(rect);
+        return true;
     }
     
     

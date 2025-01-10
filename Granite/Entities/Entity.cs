@@ -19,16 +19,19 @@ public abstract class Entity
         }
     }
     
-    protected Cell[,]? Model { get; private set; }
+    public Cell[,] Model { get; private set; } = new Cell[0, 0];
     
     protected Controller Controller { get; init; } = new Controller();
     
-    public event Action<Entity>? StateChangedEvent;
+    protected abstract void SculptModel();
     
-    protected void NotifyStateChanged(Entity entity)
-    {
-        StateChangedEvent?.Invoke(entity);
-    }
+    public EntityModelChangedDelegate? ModelChangedEvent;
     
-    public abstract void SculptModel();
+    protected abstract void OnEntityModelChangedEvent(Entity entity, Rect part, Vector2 absolutePosition);
+    
+    protected void InvokeModelChangedEvent(Entity entity, Rect part, Vector2 absolutePosition) 
+        => ModelChangedEvent?.Invoke(entity, part, absolutePosition);
+
 } 
+
+public delegate void EntityModelChangedDelegate(Entity entity, Rect part, Vector2 absolutePosition);

@@ -1,4 +1,3 @@
-using Granite.Components;
 using Granite.Entities;
 using Granite.Utilities.Math;
 
@@ -8,7 +7,7 @@ public static class Terminal
 {
     private static SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     
-    public static void PrintEntityModelPart(Entity entity, Rect part, Vector2 absolutePosition)
+    public static void PrintEntityModelPart(Entity interceptor, Entity sender, Rect part, Vector2 absolutePosition)
     {
         _semaphore.Wait();
 
@@ -22,33 +21,25 @@ public static class Terminal
                 Console.SetCursorPosition(absolutePosition.X, absolutePosition.Y++ );
                 for (int x = part.Pos.X; x < part.Pos.X + part.Size.X; x++)
                 {
-                    if (lastFgColor != entity.Model[y, x].ForegroundColor)
+                    if (lastFgColor != sender.Model[y, x].ForegroundColor)
                     {
-                        lastFgColor = entity.Model[y, x].ForegroundColor;
+                        lastFgColor = sender.Model[y, x].ForegroundColor;
                         Console.ForegroundColor = lastFgColor;
                     }
                 
-                    if (lastBgColor != entity.Model[y, x].BackgroundColor)
+                    if (lastBgColor != sender.Model[y, x].BackgroundColor)
                     {
-                        lastBgColor = entity.Model[y, x].BackgroundColor;
+                        lastBgColor = sender.Model[y, x].BackgroundColor;
                         Console.BackgroundColor = lastBgColor;
                     }
                 
-                    Console.Write(entity.Model[y, x].Character);
+                    Console.Write(sender.Model[y, x].Character);
                 }
             }
         }
         finally
         {
             _semaphore.Release();
-        }
-    }
-
-    public static void PrintEntityModelParts(Entity entity, List<Rect> parts, Vector2 absolutePosition)
-    {
-        foreach (Rect part in parts)
-        {
-            PrintEntityModelPart(entity, part, absolutePosition);
         }
     }
 }

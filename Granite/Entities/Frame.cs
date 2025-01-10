@@ -10,7 +10,7 @@ public class Frame : Entity
     
     public void AddEntity(Entity entity)
     {
-        entity.ModelChangedEvent += OnEntityModelChangedEvent;
+        entity.ModelChangedEvent += this.OnEntityModelChangedEvent;
         _entities.AddLast(entity);
     }
 
@@ -20,21 +20,21 @@ public class Frame : Entity
 
     }
 
-    protected override void OnEntityModelChangedEvent(Entity entity, Rect part, Vector2 absolutePosition)
+    protected override void OnEntityModelChangedEvent(Entity interceptor, Entity sender, Rect part, Vector2 absolutePosition)
     {
-        if (TryGetAllUncoveredSections(this, entity, part, absolutePosition, out List<Rect> sections))
+        if (TryGetAllUncoveredSections(this, interceptor, part, absolutePosition, out List<Rect> sections))
         {
             foreach (Rect section in sections)
             {
                 InvokeModelChangedEvent(
-                    entity, 
+                    this, sender, 
                     Rect.New(section.Pos - absolutePosition, section.Size), 
                     this.Position + section.Pos - this.Origin);
             }
         }
     }
     
-    private bool TryGetAllUncoveredSections(Frame frame, Entity entity, Rect part, Vector2 absolutePosition, out List<Rect> sections)
+    private bool TryGetAllUncoveredSections(Frame frame, Entity interceptor, Rect part, Vector2 absolutePosition, out List<Rect> sections)
     { 
         sections = new List<Rect>();
         Rect frameRect = new Rect(frame.Origin, frame.Size);
@@ -44,7 +44,7 @@ public class Frame : Entity
             sections.Add(inter);
             
             var enumerator = _entities.GetEnumerator();
-            while (enumerator.MoveNext() && enumerator.Current != entity)
+            while (enumerator.MoveNext() && enumerator.Current != interceptor)
             {
                 Rect rect = Rect.New(enumerator.Current.Position, enumerator.Current.Size);
                 List<Rect> temp = new List<Rect>();

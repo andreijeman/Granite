@@ -27,11 +27,11 @@ public abstract class Entity
     
     public EntityModelChangedDelegate? ModelChangedEvent;
     
-    protected abstract void OnEntityModelChangedEvent(Entity entity, Rect part, Vector2 absolutePosition);
+    protected abstract void OnEntityModelChangedEvent(Entity interceptor, Entity sender, Rect part, Vector2 absolutePosition);
     
-    protected void InvokeModelChangedEvent(Entity entity, Rect part, Vector2 absolutePosition) 
-        => ModelChangedEvent?.Invoke(entity, part, absolutePosition);
+    protected void InvokeModelChangedEvent(Entity interceptor, Entity sender, Rect part, Vector2 absolutePosition) 
+        => ModelChangedEvent?.Invoke(interceptor, sender, part, absolutePosition);
 
 } 
 
-public delegate void EntityModelChangedDelegate(Entity entity, Rect part, Vector2 absolutePosition);
+public delegate void EntityModelChangedDelegate(Entity interceptor, Entity sender, Rect part, Vector2 absolutePosition);

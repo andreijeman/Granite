@@ -6,15 +6,21 @@ using Granite.Utilities.Math;
 Console.Clear();
 
 MyEntity entity = new MyEntity();
-entity.Position = Vector2.New(-2, -2);
-entity.Size = Vector2.New(4, 4);
+entity.Position = Vector2.New(0, 0);
+entity.Size = Vector2.New(10, 10);
 
 Frame frame = new Frame();
-frame.ModelChangedEvent += Terminal.PrintEntityModelPart;
-frame.Size = Vector2.New(10, 10);
 frame.AddEntity(entity);
-frame.Position = Vector2.New(0, 0);
+frame.Size = Vector2.New(10, 10);
+frame.Position = Vector2.New(-2, -2);
 frame.Origin = Vector2.New(0, 0);
+
+Frame mainFrame = new Frame();
+mainFrame.ModelChangedEvent += Terminal.PrintEntityModelPart;
+mainFrame.AddEntity(frame);
+mainFrame.Size = Vector2.New(10, 10);
+mainFrame.Position = Vector2.New(2, 2);
+mainFrame.Origin = Vector2.New(0, 0);
 
 entity.Trigger();
 
@@ -28,13 +34,13 @@ public class MyEntity : Entity
             "GRANITE\nGRANITE\nGRANITE\nGRANITE\nGRANITE\nGRANITE\nGRANITE\nGRANITE\nGRANITE\nGRANITE\nGRANITE");
     }
 
-    protected override void OnEntityModelChangedEvent(Entity entity, Rect part, Vector2 absolutePosition)
+    protected override void OnEntityModelChangedEvent(Entity interceptor, Entity sender, Rect part, Vector2 absolutePosition)
     {
-        InvokeModelChangedEvent(entity, part, absolutePosition);
+        InvokeModelChangedEvent(interceptor, sender, part, absolutePosition);
     }
 
     public void Trigger()
     {
-        InvokeModelChangedEvent(this, Rect.New(Vector2.New(0, 0), Size), Position);
+        InvokeModelChangedEvent(this, this, Rect.New(Vector2.New(0, 0), Size), Position);
     }
 }

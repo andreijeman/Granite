@@ -5,13 +5,14 @@ public struct Cell
     public char Character;
     public ConsoleColor ForegroundColor;
     public ConsoleColor BackgroundColor;
-        
+    
     public Cell(char character, ConsoleColor foregroundColor, ConsoleColor backgroundColor)
     {
         Character = character;
         ForegroundColor = foregroundColor;
         BackgroundColor = backgroundColor;
     }
+
 
     public static Cell New(char characher, ConsoleColor foregroundColor, ConsoleColor backgroundColor)
     {

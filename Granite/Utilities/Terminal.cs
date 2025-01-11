@@ -6,6 +6,9 @@ namespace Granite.Utilities;
 public static class Terminal
 {
     private static SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+
+    private static ConsoleColor _lastFgColor;
+    private static ConsoleColor _lastBgColor;
     
     public static void PrintEntityModelPart(Entity interceptor, Entity sender, Rect part, Vector2 absolutePosition)
     {
@@ -13,27 +16,25 @@ public static class Terminal
 
         try
         {
-            ConsoleColor lastFgColor = ConsoleColor.Black;
-            ConsoleColor lastBgColor = ConsoleColor.Black;
-            
             for (int y = part.Pos.Y; y < part.Pos.Y + part.Size.Y; y++)
             {
                 Console.SetCursorPosition(absolutePosition.X, absolutePosition.Y);
                 for (int x = part.Pos.X; x < part.Pos.X + part.Size.X; x++)
                 {
-                    if (lastFgColor != sender.Model[y, x].ForegroundColor)
+                    if (_lastFgColor != sender.Model[y, x].ForegroundColor)
                     {
-                        lastFgColor = sender.Model[y, x].ForegroundColor;
-                        Console.ForegroundColor = lastFgColor;
+                        _lastFgColor = sender.Model[y, x].ForegroundColor;
+                        Console.ForegroundColor = _lastFgColor;
                     }
                 
-                    if (lastBgColor != sender.Model[y, x].BackgroundColor)
+                    if (_lastBgColor != sender.Model[y, x].BackgroundColor)
                     {
-                        lastBgColor = sender.Model[y, x].BackgroundColor;
-                        Console.BackgroundColor = lastBgColor;
+                        _lastBgColor = sender.Model[y, x].BackgroundColor;
+                        Console.BackgroundColor = _lastBgColor;
                     }
-                
+
                     Console.Write(sender.Model[y, x].Character);
+                    //Thread.Sleep(20);
                 }
 
                 absolutePosition.Y++;

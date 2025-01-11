@@ -1,5 +1,3 @@
-using Granite.Components;
-using Granite.Utilities;
 using Granite.Utilities.Math;
 
 namespace Granite.Entities;
@@ -43,9 +41,9 @@ public class Frame : Entity
         sections = new List<Rect>();
         Rect frameRect = new Rect(frame.Origin, frame.Size);
         
-        if (frameRect.TryGetIntersection(Rect.New(absolutePosition, part.Size), out Rect inter))
+        if (frameRect.TryGetIntersection(Rect.New(absolutePosition, part.Size), out Rect sec))
         {
-            sections.Add(inter);
+            sections.Add(sec);
             
             var enumerator = _entities.GetEnumerator();
             while (enumerator.MoveNext() && enumerator.Current != interceptor)
@@ -79,23 +77,35 @@ public class Frame : Entity
 
     public void OnPositionChangedEvent(Entity sender, Rect section)
     {
-        if (Rect.New(this.Origin, this.Size).TryGetIntersection(section, out Rect inter))
+        if (Rect.New(this.Origin, this.Size).TryGetIntersection(section, out Rect sec))
         {
-            var node = _entities.Find(sender);
-            node = node?.Next;
-            while(node != null)
-            {
-                var entity = node.Value;
-                if (inter.TryGetIntersection(Rect.New(entity.Position, entity.Size), out Rect sec))
-                {
-                    this.ModelChangedEvent?.Invoke(
-                        this, entity, 
-                        Rect.New(sec.Pos - entity.Position, sec.Size), 
-                        this.Position + sec.Pos - this.Origin);
-                }
-                node = node.Next;
-            }
+            var enumerator = _entities.GetEnumerator();
+            var entityNode = _entities.Find(sender)?.Next;
+            Entity entity;
             
+            while (enumerator.MoveNext() && enumerator.Current != sender)
+            {
+                entity = enumerator.Current;
+                if (sec.TryGetUncoveredSections(Rect.New(entity.Position, entity.Size), out var coveredSections))
+                {
+                    foreach (var s in coveredSections)
+                    {
+                        var node = entityNode;
+                        while(node != null)
+                        {
+                            entity = node.Value;
+                            if (s.TryGetIntersection(Rect.New(entity.Position, entity.Size), out Rect sec3))
+                            {
+                                this.ModelChangedEvent?.Invoke(
+                                    this, entity, 
+                                    Rect.New(sec3.Pos - entity.Position, sec3.Size), 
+                                    this.Position + sec3.Pos - this.Origin);
+                            }
+                            node = node.Next;
+                        }                        
+                    }
+                }
+            }
         }
     }
 }

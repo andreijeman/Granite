@@ -1,7 +1,9 @@
 namespace Granite.Graphics;
 
-public abstract class Object2D
+public class Object2D
 {
+    public Cell[,] Model { get; private set; } = new Cell[0, 0];
+    
     private int _left;
     private int _top;
     private int _width;
@@ -12,15 +14,16 @@ public abstract class Object2D
         get => _left;
         set
         {
+            int prevLeft = _left;
+            _left = value;
             PositionChangedEvent?.Invoke(
+                this,
                 new PositionChangedData()
                 {
                     Object = this,
-                    Left = _left, Top = _top,
-                    NewLeft = value, NewTop = _top,
-                }); 
-            _left = value;
-            InvokeEntireModelChangedEvent();
+                    PrevLeft = prevLeft,
+                    PrevTop = _top
+                });
         }
     }
 
@@ -29,15 +32,16 @@ public abstract class Object2D
         get => _top;
         set
         {
+            int prevTop = _top;
+            _top = value;
             PositionChangedEvent?.Invoke(
+                this,
                 new PositionChangedData()
                 {
                     Object = this,
-                    Left = _left, Top = _top,
-                    NewLeft = _left, NewTop = value,
-                }); 
-            _top = value;
-            InvokeEntireModelChangedEvent();
+                    PrevLeft = _left,
+                    PrevTop = prevTop
+                });
         }
     }
     
@@ -46,9 +50,18 @@ public abstract class Object2D
         get => _width;
         set
         {
+            int prevWidth = _width;
             _width = value;
             Model = new Cell[_height, _width];
             SculptModel();
+            SizeChangedEvent?.Invoke(
+                this,
+                new SizeChangedData()
+                {
+                    Object = this,
+                    PrevWidth = prevWidth,
+                    PrevHeight = _height,
+                });
             InvokeEntireModelChangedEvent();
         }
     }
@@ -58,23 +71,49 @@ public abstract class Object2D
         get => _height;
         set
         {
+            int prevHeight = _height;
             _height = value;
-            Model = new Cell[_height, _width]; 
+            Model = new Cell[_height, _width];
             SculptModel();
+            SizeChangedEvent?.Invoke(
+                this,
+                new SizeChangedData()
+                {
+                    Object = this,
+                    PrevWidth = _width,
+                    PrevHeight = prevHeight,
+                });
             InvokeEntireModelChangedEvent();
         }
     }
-    
-    public Cell[,] Model { get; private set; } = new Cell[0, 0];
 
-    public abstract void SculptModel();
+    public virtual void SculptModel()
+    {
+        var rnd = new Random();
+        Cell.RgbColor color = new Cell.RgbColor() { R = rnd.Next(0, 255), G = rnd.Next(0, 255), B = rnd.Next(0, 255) };
+        
+        for (int i = 0; i < _height; i++)
+        {
+            for (int j = 0; j < _width; j++)
+            {
+                Model[i, j] = 
+                    new Cell()
+                    {
+                        Character = 'x',
+                        ForegroundRgbColor = color,
+                        BackgroundRgbColor = color
+                    };
+            }
+        }
+    }
 
-    public event Action<ModelChangedData>? ModelChangedEvent;
-    public event Action<PositionChangedData>? PositionChangedEvent;
+    public event Action<Object2D, ModelChangedData>? ModelChangedEvent;
+    public event Action<Object2D, PositionChangedData>? PositionChangedEvent;
+    public event Action<Object2D, SizeChangedData>? SizeChangedEvent;
 
     public virtual void InvokeModelChangedEvent(ModelChangedData modelChangedData)
     {
-        ModelChangedEvent?.Invoke(modelChangedData);
+        ModelChangedEvent?.Invoke(this, modelChangedData);
     }
 
     public void InvokeEntireModelChangedEvent()
@@ -83,24 +122,31 @@ public abstract class Object2D
             new ModelChangedData()
             {
                 Object = this,
-                X1 = 0, Y1 = 0, X2 = _width - 1, Y2 = _height - 1,
-                Left = _left, Top = _top
+                SectLeft = _left,
+                SectTop = _top,
+                SectX1 = 0,
+                SectY1 = 0,
+                SectX2 = _width - 1,
+                SectY2 = _height - 1
             });
     }
 
     public struct ModelChangedData
     {
         public Object2D Object { get; init; }
-        //Model section 
-        public int X1, Y1, X2, Y2;
-        //Absolute position
-        public int Left, Top;
+        public int SectLeft, SectTop;
+        public int SectX1, SectY1, SectX2, SectY2;
     }
     
     public struct PositionChangedData
     {
         public Object2D Object { get; init; }
-        public int Left, Top;
-        public int NewLeft, NewTop;
+        public int PrevLeft, PrevTop;
+    }
+    
+    public struct SizeChangedData
+    {
+        public Object2D Object { get; init; }
+        public int PrevWidth, PrevHeight;
     }
 }

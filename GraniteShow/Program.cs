@@ -23,45 +23,44 @@ MyObject myObject = new MyObject()
     }
 };
 
-
-var rnd = new Random();
-for (int i = 0; i < 5; i++)
+MyObject myObject2 = new MyObject()
 {
-    mainFrame.AddFront(
-        new MyObject()
-        {
-            Left = rnd.Next(mainFrame.Width),
-            Top = rnd.Next(mainFrame.Height),
-            Width = rnd.Next(mainFrame.Width / 4),
-            Height = rnd.Next(mainFrame.Height / 4),
-            Color = new Cell.RgbColor()
-            {
-                R = rnd.Next(255), 
-                G = rnd.Next(255), 
-                B = rnd.Next(255)
-            }
-        });
-}
+    Width = 4,
+    Height = 2,
+    Color = new Cell.RgbColor()
+    {
+        R = 100, 
+        G = 23, 
+        B = 225
+    },
+    Left = 30,
+    Top = 30
+};
 
 mainFrame.AddFront(myObject);
+mainFrame.AddFront(myObject2);
 
-for (int i = 0; i < 5; i++)
-{
-    mainFrame.AddFront(
-        new MyObject()
-        {
-            Left = rnd.Next(mainFrame.Width),
-            Top = rnd.Next(mainFrame.Height),
-            Width = rnd.Next(mainFrame.Width / 4),
-            Height = rnd.Next(mainFrame.Height / 4),
-            Color = new Cell.RgbColor()
-            {
-                R = rnd.Next(255), 
-                G = rnd.Next(255), 
-                B = rnd.Next(255)
-            }
-        });
-}
+
+
+var rnd = new Random();
+
+// for (int i = 0; i < 10; i++)
+// {
+//     mainFrame.AddFront(
+//         new MyObject()
+//         {
+//             Left = rnd.Next(mainFrame.Width),
+//             Top = rnd.Next(mainFrame.Height),
+//             Width = rnd.Next(mainFrame.Width / 4),
+//             Height = rnd.Next(mainFrame.Height / 4),
+//             Color = new Cell.RgbColor()
+//             {
+//                 R = rnd.Next(255), 
+//                 G = rnd.Next(255), 
+//                 B = rnd.Next(255)
+//             }
+//         });
+// }
 
 Console.Clear();
 Console.CursorVisible = false;

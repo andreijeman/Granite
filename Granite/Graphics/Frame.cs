@@ -56,6 +56,17 @@ public sealed class Frame : Object2D
         var temp = _objects[newIndex];
         _objects[newIndex] = obj;
         _objects[index] = temp;
+        
+        InvokeModelChangedEvent(new ModelChangedData()
+        {
+            Object = this,
+            SectX1 = obj.Left - LocalLeft,
+            SectY1 = obj.Top - LocalTop,
+            SectX2 = obj.Left - LocalLeft + obj.Width - 1,
+            SectY2 = obj.Top - LocalTop + obj.Height - 1,
+            SectLeft = Left + obj.Left - LocalLeft,
+            SectTop = Top + obj.Top - LocalTop,
+        });
     }
 
     public void BringForward(Object2D obj) => ShiftBy(obj, 1);
@@ -79,8 +90,8 @@ public sealed class Frame : Object2D
     }
     public override void InvokeModelChangedEvent(ModelChangedData data)
     {
-        data.SectLeft += LocalLeft + data.SectX1;
-        data.SectTop += LocalTop + data.SectY1;
+        data.SectLeft = LocalLeft + data.SectX1;
+        data.SectTop = LocalTop + data.SectY1;
         OnModelChangedEvent(this, data);
         
         RectMath.Rect frameSect = new RectMath.Rect()
@@ -88,7 +99,7 @@ public sealed class Frame : Object2D
             X1 = data.SectLeft,
             Y1 = data.SectTop,
             X2 = data.SectLeft + data.SectX2 - data.SectX1,
-            Y2 = data.SectLeft + data.SectY2 - data.SectY1,
+            Y2 = data.SectTop + data.SectY2 - data.SectY1,
         };
 
         foreach (var obj in _objects)
@@ -282,11 +293,11 @@ public sealed class Frame : Object2D
                                 SectLeft = result.X1,
                                 SectTop = result.Y1,
                             });
-
-                            if (objRect.TryGetUncoveredSections(result, out var results))
-                            {
-                                temp.AddRange(results);
-                            }
+                        }
+                        
+                        if (sect.TryGetUncoveredSections(result, out var results))
+                        {
+                            temp.AddRange(results);
                         }
                     }
                     sections = temp;

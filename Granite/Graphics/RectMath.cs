@@ -60,7 +60,7 @@ public static class RectMath
             results.Add(new Rect()
             {
                 X1 = rect.X1,
-                Y1 = sect.Y1 + 1,
+                Y1 = sect.Y2 + 1,
                 X2 = rect.X2,
                 Y2 = rect.Y2,
             });

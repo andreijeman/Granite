@@ -1,5 +1,14 @@
 ﻿using Granite.Graphics;
 
+
+Frame frame = new Frame()
+{
+    Width = 40,
+    Height = 20,
+};
+
+frame.ModelChangedEvent += Output.OnModelChangedEvent;
+
 MyObject myObject = new MyObject()
 {
     Width = 4,
@@ -12,26 +21,18 @@ MyObject myObject = new MyObject()
     }
 };
 
-Frame frame = new Frame()
-{
-    Width = 40,
-    Height = 20,
-};
-
-frame.ModelChangedEvent += Output.OnModelChangedEvent;
-
-frame.AddObject(myObject);
+frame.AddFront(myObject);
 
 var rnd = new Random();
 for (int i = 0; i < 10; i++)
 {
-    frame.AddObject(
+    frame.AddFront(
         new MyObject()
         {
             Left = rnd.Next(frame.Width),
             Top = rnd.Next(frame.Height),
-            Width = rnd.Next(frame.Width / 5),
-            Height = rnd.Next(frame.Height / 5),
+            Width = 4,
+            Height = 2,
             Color = new Cell.RgbColor()
             {
                 R = rnd.Next(255), 
@@ -58,7 +59,7 @@ while (true)
         case ConsoleKey.DownArrow: obj.Top++; break;
         case ConsoleKey.Q: obj.Height++; break;
         case ConsoleKey.W: obj.Height--; break;
-        case ConsoleKey.F: frame.BringObjectFront(obj); break;
+        //case ConsoleKey.F: frame.BringObjectFront(obj); break;
         default: break;
     }
 }
@@ -91,7 +92,7 @@ public class MyObject : Object2D
             {
                 BackgroundRgbColor = Color,
                 ForegroundRgbColor = Color,
-                Character = 'x'
+                Character = 'X'
             });
     }
 }

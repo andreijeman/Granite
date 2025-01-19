@@ -12,4 +12,9 @@ public struct Cell
         public int G;
         public int B;
     }
+
+    public Cell()
+    {
+        Character = ' ';
+    }
 }

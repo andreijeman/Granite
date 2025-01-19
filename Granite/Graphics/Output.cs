@@ -4,17 +4,18 @@ public static class Output
 {
     private static SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     
-    public static void OnModelChangedEvent(Object2D.ModelChangedData data)
+    public static void OnModelChangedEvent(Object2D sender, Object2D.ModelChangedData data)
     {
+        Console.ReadKey();
         _semaphore.Wait();
 
         try
         {
             Cell cell;
-            for (int i = data.Y1; i <= data.Y2; i++)
+            for (int i = data.SectY1; i <= data.SectY2; i++)
             {
-                Console.SetCursorPosition(data.Left, data.Top++);
-                for (int j = data.X1; j <= data.X2; j++)
+                Console.SetCursorPosition(data.SectLeft, data.SectTop++);
+                for (int j = data.SectX1; j <= data.SectX2; j++)
                 {
                     cell = data.Object.Model[i, j];
                     Console.Write(

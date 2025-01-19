@@ -86,23 +86,15 @@ public class Object2D
             InvokeEntireModelChangedEvent();
         }
     }
-
+    
     public virtual void SculptModel()
     {
-        var rnd = new Random();
-        Cell.RgbColor color = new Cell.RgbColor() { R = rnd.Next(0, 255), G = rnd.Next(0, 255), B = rnd.Next(0, 255) };
-        
         for (int i = 0; i < _height; i++)
         {
             for (int j = 0; j < _width; j++)
             {
-                Model[i, j] = 
-                    new Cell()
-                    {
-                        Character = 'x',
-                        ForegroundRgbColor = color,
-                        BackgroundRgbColor = color
-                    };
+                Model[i, j] = new Cell();
+
             }
         }
     }
@@ -122,12 +114,12 @@ public class Object2D
             new ModelChangedData()
             {
                 Object = this,
-                SectLeft = _left,
-                SectTop = _top,
                 SectX1 = 0,
                 SectY1 = 0,
                 SectX2 = _width - 1,
-                SectY2 = _height - 1
+                SectY2 = _height - 1,
+                SectLeft = _left,
+                SectTop = _top
             });
     }
 

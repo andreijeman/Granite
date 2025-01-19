@@ -6,6 +6,7 @@ public static class Output
     
     public static void OnModelChangedEvent(Object2D sender, Object2D.ModelChangedData data)
     {
+        //Console.ReadKey();
         _semaphore.Wait();
 
         try

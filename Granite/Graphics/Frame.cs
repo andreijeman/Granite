@@ -51,6 +51,8 @@ public sealed class Frame : Object2D
 
     public void ShiftBy(Object2D obj, int steps)
     {
+        if (!_objects.Contains(obj)) return;
+        
         int index = _objects.IndexOf(obj);
         int newIndex = Math.Max(0, Math.Min(index - steps, _objects.Count - 1));
         var temp = _objects[newIndex];
@@ -96,10 +98,10 @@ public sealed class Frame : Object2D
         
         RectMath.Rect frameSect = new RectMath.Rect()
         {
-            X1 = data.SectLeft,
-            Y1 = data.SectTop,
-            X2 = data.SectLeft + data.SectX2 - data.SectX1,
-            Y2 = data.SectTop + data.SectY2 - data.SectY1,
+            X1 = LocalLeft + data.SectX1,
+            Y1 = LocalTop + data.SectY1,
+            X2 = LocalLeft + data.SectX2 - data.SectX1,
+            Y2 = LocalTop + data.SectY2 - data.SectY1,
         };
 
         foreach (var obj in _objects)
@@ -121,8 +123,8 @@ public sealed class Frame : Object2D
                     SectY1 = isect.Y1 - obj.Top,
                     SectX2 = isect.X2 - obj.Left,
                     SectY2 = isect.Y2 - obj.Top,
-                    SectLeft = Left + isect.X1 - LocalLeft,
-                    SectTop = Top + isect.Y1 - LocalTop,
+                    SectLeft = isect.X1,
+                    SectTop = isect.Y1,
                 });
             }
         }
@@ -178,10 +180,10 @@ public sealed class Frame : Object2D
                 base.InvokeModelChangedEvent(new ModelChangedData()
                 {
                     Object = data.Object,
-                    SectX1 = sect.X1 - data.SectLeft,
-                    SectY1 = sect.Y1 - data.SectTop,
-                    SectX2 = sect.X2 - data.SectLeft,
-                    SectY2 = sect.Y2 - data.SectTop,
+                    SectX1 = data.SectX1 + sect.X1 - data.SectLeft,
+                    SectY1 = data.SectY1 + sect.Y1 - data.SectTop,
+                    SectX2 = data.SectX1 + sect.X2 - data.SectLeft,
+                    SectY2 = data.SectY1 + sect.Y2 - data.SectTop,
                     SectLeft = Left + sect.X1 - LocalLeft,
                     SectTop = Top + sect.Y1 - LocalTop,
                 });

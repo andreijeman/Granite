@@ -24,6 +24,7 @@ public class Object2D
                     PrevLeft = prevLeft,
                     PrevTop = _top
                 });
+            InvokeEntireModelChangedEvent();
         }
     }
 
@@ -42,6 +43,7 @@ public class Object2D
                     PrevLeft = _left,
                     PrevTop = prevTop
                 });
+            InvokeEntireModelChangedEvent();
         }
     }
     
@@ -50,6 +52,7 @@ public class Object2D
         get => _width;
         set
         {
+            if (value < 0) return;
             int prevWidth = _width;
             _width = value;
             Model = new Cell[_height, _width];
@@ -71,6 +74,7 @@ public class Object2D
         get => _height;
         set
         {
+            if (value < 0) return;
             int prevHeight = _height;
             _height = value;
             Model = new Cell[_height, _width];

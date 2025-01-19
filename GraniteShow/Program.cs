@@ -1,13 +1,15 @@
-﻿using Granite.Graphics;
+﻿using Granite;
+using Granite.Graphics;
+using Granite.Utilities;
 
 
-Frame frame = new Frame()
+Frame mainFrame = new Frame()
 {
-    Width = 40,
-    Height = 20,
+    Width = Console.BufferWidth,
+    Height = Console.BufferHeight,
 };
 
-frame.ModelChangedEvent += Output.OnModelChangedEvent;
+mainFrame.ModelChangedEvent += Output.OnModelChangedEvent;
 
 MyObject myObject = new MyObject()
 {
@@ -21,18 +23,37 @@ MyObject myObject = new MyObject()
     }
 };
 
-frame.AddFront(myObject);
 
 var rnd = new Random();
-for (int i = 0; i < 10; i++)
+for (int i = 0; i < 5; i++)
 {
-    frame.AddFront(
+    mainFrame.AddFront(
         new MyObject()
         {
-            Left = rnd.Next(frame.Width),
-            Top = rnd.Next(frame.Height),
-            Width = 4,
-            Height = 2,
+            Left = rnd.Next(mainFrame.Width),
+            Top = rnd.Next(mainFrame.Height),
+            Width = rnd.Next(mainFrame.Width / 4),
+            Height = rnd.Next(mainFrame.Height / 4),
+            Color = new Cell.RgbColor()
+            {
+                R = rnd.Next(255), 
+                G = rnd.Next(255), 
+                B = rnd.Next(255)
+            }
+        });
+}
+
+mainFrame.AddFront(myObject);
+
+for (int i = 0; i < 5; i++)
+{
+    mainFrame.AddFront(
+        new MyObject()
+        {
+            Left = rnd.Next(mainFrame.Width),
+            Top = rnd.Next(mainFrame.Height),
+            Width = rnd.Next(mainFrame.Width / 4),
+            Height = rnd.Next(mainFrame.Height / 4),
             Color = new Cell.RgbColor()
             {
                 R = rnd.Next(255), 
@@ -45,7 +66,7 @@ for (int i = 0; i < 10; i++)
 Console.Clear();
 Console.CursorVisible = false;
 
-frame.InvokeEntireModelChangedEvent();
+mainFrame.InvokeEntireModelChangedEvent();
 
 Object2D obj = myObject;
 while (true)
@@ -59,7 +80,8 @@ while (true)
         case ConsoleKey.DownArrow: obj.Top++; break;
         case ConsoleKey.Q: obj.Height++; break;
         case ConsoleKey.W: obj.Height--; break;
-        //case ConsoleKey.F: frame.BringObjectFront(obj); break;
+        case ConsoleKey.A: mainFrame.BringForward(obj); break;
+        case ConsoleKey.S: mainFrame.SendBackward(obj); break;
         default: break;
     }
 }

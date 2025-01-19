@@ -1,4 +1,6 @@
-namespace Granite.Graphics;
+using Granite.Graphics;
+
+namespace Granite.Utilities;
 
 public static class ModelBuilder
 {

@@ -9,72 +9,46 @@ Frame mainFrame = new Frame()
 
 mainFrame.ModelChangedEvent += Output.OnModelChangedEvent;
 
-Frame frame = new Frame()
-{
-    Width = 64,
-    Height = 24,
-    Left = 10,
-    Top = 10,
-};
-
-mainFrame.AddFront(frame);
-
-MyObject myObject = new MyObject()
-{
-    Width = 4,
-    Height = 2,
-    Color = new Cell.RgbColor()
-    {
-        R = 200, 
-        G = 24, 
-        B = 125
-    }
-};
-
-frame.AddFront(myObject);
-
+List<Object2D> list = new List<Object2D>();
+int n = 10;
 var rnd = new Random();
 
-for (int i = 0; i < 10; i++)
+for (int i = 0; i < n; i++)
 {
-    frame.AddFront(
-        new MyObject()
+    var obj = new MyObject()
+    {
+      Left = rnd.Next(mainFrame.Width),
+      Top = rnd.Next(mainFrame.Height),
+      Width = rnd.Next(mainFrame.Width / 4),
+      Height = rnd.Next(mainFrame.Height / 4),
+      Color = new Cell.RgbColor()
         {
-            Left = rnd.Next(frame.Width),
-            Top = rnd.Next(frame.Height),
-            Width = rnd.Next(frame.Width / 4),
-            Height = rnd.Next(frame.Height / 4),
-            Color = new Cell.RgbColor()
-            {
-                R = rnd.Next(255), 
-                G = rnd.Next(255), 
-                B = rnd.Next(255)
-            }
-        });
+          R = rnd.Next(255), 
+          G = rnd.Next(255), 
+          B = rnd.Next(255)
+        }
+    };
+
+    list.Add(obj);
+    mainFrame.AddFront(obj);
 }
+
 
 Console.Clear();
 Console.CursorVisible = false;
-
 mainFrame.InvokeEntireModelChangedEvent();
-
-Object2D obj = frame;
 while (true)
 {
-    var key = Console.ReadKey(true).Key;
-    switch (key)
+    Console.ReadKey();
+    foreach (var obj in list)
     {
-        case ConsoleKey.LeftArrow: obj.Left--; break;
-        case ConsoleKey.RightArrow: obj.Left++; break;
-        case ConsoleKey.UpArrow: obj.Top--; break;
-        case ConsoleKey.DownArrow: obj.Top++; break;
-        case ConsoleKey.Q: obj.Height++; break;
-        case ConsoleKey.W: obj.Height--; break;
-        case ConsoleKey.A: mainFrame.BringForward(obj); break;
-        case ConsoleKey.S: mainFrame.SendBackward(obj); break;
-        default: break;
-    }
+        obj.Left = rnd.Next(mainFrame.Width);
+        obj.Top = rnd.Next(mainFrame.Height);
+        obj.Width = rnd.Next(mainFrame.Width / 4);
+        obj.Height = rnd.Next(mainFrame.Height / 4);
+    }    
 }
+
 
 public class MyObject : Object2D
 {

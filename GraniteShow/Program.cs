@@ -39,14 +39,29 @@ Console.CursorVisible = false;
 mainFrame.InvokeEntireModelChangedEvent();
 while (true)
 {
-    Console.ReadKey();
-    foreach (var obj in list)
+    var key = Console.ReadKey(true).Key;
+    switch (key)
     {
-        obj.Left = rnd.Next(mainFrame.Width);
-        obj.Top = rnd.Next(mainFrame.Height);
-        obj.Width = rnd.Next(mainFrame.Width / 4);
-        obj.Height = rnd.Next(mainFrame.Height / 4);
-    }    
+        case ConsoleKey.LeftArrow: list[0].Left--; break;
+        case ConsoleKey.RightArrow: list[0].Left++; break;
+        case ConsoleKey.UpArrow: list[0].Top--; break;
+        case ConsoleKey.DownArrow: list[0].Top++; break;
+        case ConsoleKey.Q: list[0].Height++; break;
+        case ConsoleKey.W: list[0].Height--; break;
+        case ConsoleKey.A: mainFrame.BringForward(list[0]); break;
+        case ConsoleKey.S: mainFrame.SendBackward(list[0]); break;
+        case ConsoleKey.Enter:
+            foreach (var obj in list)
+            {
+                obj.Left = rnd.Next(mainFrame.Width);
+                obj.Top = rnd.Next(mainFrame.Height);
+                obj.Width = rnd.Next(mainFrame.Width / 4);
+                obj.Height = rnd.Next(mainFrame.Height / 4);
+            }
+
+            break;
+        default: break;
+    }
 }
 
 

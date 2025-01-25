@@ -1,7 +1,5 @@
-﻿using Granite;
-using Granite.Graphics;
+﻿﻿using Granite.Graphics;
 using Granite.Utilities;
-
 
 Frame mainFrame = new Frame()
 {
@@ -10,6 +8,16 @@ Frame mainFrame = new Frame()
 };
 
 mainFrame.ModelChangedEvent += Output.OnModelChangedEvent;
+
+Frame frame = new Frame()
+{
+    Width = 64,
+    Height = 24,
+    Left = 10,
+    Top = 10,
+};
+
+mainFrame.AddFront(frame);
 
 MyObject myObject = new MyObject()
 {
@@ -23,51 +31,34 @@ MyObject myObject = new MyObject()
     }
 };
 
-MyObject myObject2 = new MyObject()
-{
-    Width = 4,
-    Height = 2,
-    Color = new Cell.RgbColor()
-    {
-        R = 100, 
-        G = 23, 
-        B = 225
-    },
-    Left = 30,
-    Top = 30
-};
-
-mainFrame.AddFront(myObject);
-mainFrame.AddFront(myObject2);
-
-
+frame.AddFront(myObject);
 
 var rnd = new Random();
 
-// for (int i = 0; i < 10; i++)
-// {
-//     mainFrame.AddFront(
-//         new MyObject()
-//         {
-//             Left = rnd.Next(mainFrame.Width),
-//             Top = rnd.Next(mainFrame.Height),
-//             Width = rnd.Next(mainFrame.Width / 4),
-//             Height = rnd.Next(mainFrame.Height / 4),
-//             Color = new Cell.RgbColor()
-//             {
-//                 R = rnd.Next(255), 
-//                 G = rnd.Next(255), 
-//                 B = rnd.Next(255)
-//             }
-//         });
-// }
+for (int i = 0; i < 10; i++)
+{
+    frame.AddFront(
+        new MyObject()
+        {
+            Left = rnd.Next(frame.Width),
+            Top = rnd.Next(frame.Height),
+            Width = rnd.Next(frame.Width / 4),
+            Height = rnd.Next(frame.Height / 4),
+            Color = new Cell.RgbColor()
+            {
+                R = rnd.Next(255), 
+                G = rnd.Next(255), 
+                B = rnd.Next(255)
+            }
+        });
+}
 
 Console.Clear();
 Console.CursorVisible = false;
 
 mainFrame.InvokeEntireModelChangedEvent();
 
-Object2D obj = myObject;
+Object2D obj = frame;
 while (true)
 {
     var key = Console.ReadKey(true).Key;
@@ -113,7 +104,7 @@ public class MyObject : Object2D
             {
                 BackgroundRgbColor = Color,
                 ForegroundRgbColor = Color,
-                Character = 'X'
+                Character = ' '
             });
     }
 }

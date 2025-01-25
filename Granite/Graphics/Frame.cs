@@ -65,7 +65,7 @@ public sealed class Frame : Object2D
             SectX2 = obj.Left - LocalLeft + obj.Width - 1,
             SectY2 = obj.Top - LocalTop + obj.Height - 1,
             SectLeft = Left + obj.Left - LocalLeft,
-            SectTop = Top + obj.Top - LocalTop,
+            SectTop = Top + obj.Top - LocalTop
         });
     }
 
@@ -99,7 +99,7 @@ public sealed class Frame : Object2D
             X1 = data.SectLeft,
             Y1 = data.SectTop,
             X2 = data.SectLeft + data.SectX2 - data.SectX1,
-            Y2 = data.SectTop + data.SectY2 - data.SectY1,
+            Y2 = data.SectTop + data.SectY2 - data.SectY1
         };
 
         foreach (var obj in _objects)
@@ -121,8 +121,8 @@ public sealed class Frame : Object2D
                     SectY1 = isect.Y1 - obj.Top,
                     SectX2 = isect.X2 - obj.Left,
                     SectY2 = isect.Y2 - obj.Top,
-                    SectLeft = Left + isect.X1 - LocalLeft,
-                    SectTop = Top + isect.Y1 - LocalTop,
+                    SectLeft = isect.X1,
+                    SectTop = isect.Y1
                 });
             }
         }
@@ -178,12 +178,12 @@ public sealed class Frame : Object2D
                 base.InvokeModelChangedEvent(new ModelChangedData()
                 {
                     Object = data.Object,
-                    SectX1 = sect.X1 - data.SectLeft,
-                    SectY1 = sect.Y1 - data.SectTop,
-                    SectX2 = sect.X2 - data.SectLeft,
-                    SectY2 = sect.Y2 - data.SectTop,
+                    SectX1 = data.SectX1 + sect.X1 - data.SectLeft,
+                    SectY1 = data.SectY1 + sect.Y1 - data.SectTop,
+                    SectX2 = data.SectX1 + sect.X2 - data.SectLeft,
+                    SectY2 = data.SectY1 + sect.Y2 - data.SectTop,
                     SectLeft = Left + sect.X1 - LocalLeft,
-                    SectTop = Top + sect.Y1 - LocalTop,
+                    SectTop = Top + sect.Y1 - LocalTop
                 });
             }
         }

@@ -1,9 +1,8 @@
-﻿using Granite.Entities;
-using Granite.Graphics;
+﻿using Granite.Graphics;
 
-namespace Granite.Controls;
+namespace Granite.Entities;
 
-public abstract class InteractiveObject : Object2D, IInteractive
+public abstract class Entity : Object2D, IInteractive
 {
     private bool _isIdle = true;
     public void Unfocus()

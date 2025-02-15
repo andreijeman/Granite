@@ -1,12 +1,8 @@
-﻿
-using Granite.Controls;
-using Granite.Graphics;
+﻿namespace Granite.Entities;
 
-namespace Granite.Entities;
-
-public class InteractiveFrame : Frame, IInteractive
+public class Controller : IInteractive
 {
-    private static Stack<InteractiveFrame> _frames = new Stack<InteractiveFrame>();
+    private Controller? _parentController;
     private List<IInteractive> _objects = new List<IInteractive>();
 
     private int _currentObjIndex = -1;
@@ -16,17 +12,39 @@ public class InteractiveFrame : Frame, IInteractive
     public ConsoleKey ExitKey { get; set; } = ConsoleKey.Escape;
     public ConsoleKey SelectKey { get; set; } = ConsoleKey.Enter;
 
-    public InteractiveFrame()
-    {
-        if (_frames.Count == 0) _frames.Push(this);
-    }
+    public Controller? ParentController { get => _parentController; set => _parentController = value; }
 
-    public void AddFront(InteractiveObject obj)
+    public void AddFront(IInteractive obj)
     {
         if (!_objects.Contains(obj))
         {
             _objects.Add(obj);
-            base.AddFront(obj);
+        }
+    }
+
+    public void AddBack(IInteractive obj)
+    {
+        if (!_objects.Contains(obj))
+        {
+            _objects.Insert(0, obj);
+        }
+    }
+
+    public void AddFront(Controller obj)
+    {
+        if (!_objects.Contains(obj))
+        {
+            _objects.Add(obj);
+            obj.ParentController = this;
+        }
+    }
+
+    public void AddBack(Controller obj)
+    {
+        if (!_objects.Contains(obj))
+        {
+            _objects.Insert(0, obj);
+            obj.ParentController = this;
         }
     }
 
@@ -40,11 +58,10 @@ public class InteractiveFrame : Frame, IInteractive
         }
         else if (key == ExitKey)
         {
-            if(_frames.Count > 1)
+            if(_parentController != null)
             {
-                this.Unbind();
-                _frames.Pop();
-                _frames.Last().Bind();
+                this.UnbindToConsoleKeyListener();
+                _parentController.BindToConsoleKeyListener();
             }
         }
         else
@@ -57,18 +74,17 @@ public class InteractiveFrame : Frame, IInteractive
     {
         if (key == SelectKey)
         {
-            _frames.Last().Unbind();
-            _frames.Push(this);
-            Bind();
+            _parentController?.UnbindToConsoleKeyListener();
+            BindToConsoleKeyListener();
         }
     }
 
-    public void Bind()
+    public void BindToConsoleKeyListener()
     {
         ConsoleKeyListener.KeyPressedEvent += ProcessPressedKeyHelper;
     }
 
-    public void Unbind()
+    public void UnbindToConsoleKeyListener()
     {
         ConsoleKeyListener.KeyPressedEvent -= ProcessPressedKeyHelper;
     }

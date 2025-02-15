@@ -1,3 +1,5 @@
+using Granite.Utilities;
+
 namespace Granite.Graphics;
 
 public class Frame : Object2D
@@ -75,18 +77,10 @@ public class Frame : Object2D
     
     public override void SculptModel()
     {
-        Cell cell = new Cell();
-        for (int i = 0; i < this.Height; i++)
-        {
-            for (int j = 0; j < this.Width / 2; j++)
-            {
-                cell.Character = ' ';
-                cell.BackgroundRgbColor = (i + j) % 2 == 0 ? new RgbColor() {R = 64, G = 64, B = 64 } : new RgbColor() {R = 128, G = 128, B = 128 };
-
-                this.Model[i, 2 * j] = cell;
-                this.Model[i, 2 * j + 1] = cell;
-            }
-        }
+        Model.SetChessboardColors(
+            new Rect { X1 = 0, Y1 = 0, X2 = Width - 1, Y2 = Height - 1 }, 
+            new RgbColor() { R = 64, G = 64, B = 64 },
+            new RgbColor() { R = 128, G = 128, B = 128 });
     }
     public override void InvokeModelChangedEvent(ModelChangedData data)
     {

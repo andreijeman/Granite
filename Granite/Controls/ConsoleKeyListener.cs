@@ -29,15 +29,16 @@ public static class ConsoleKeyListener
                 }
                 _watch.Restart();
             }
-            else if(_watch.ElapsedMilliseconds > 100)
+            else if(_watch.ElapsedMilliseconds > 50)
             {
                 _watch.Reset();
                 KeyReleasedEvent?.Invoke(_lastKey);
                 _lastKey = ConsoleKey.None;
             }
+
+            await Task.Delay(20);
         }
 
-        await Task.Delay(200);
     }
 
     public static void Start()

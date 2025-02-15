@@ -1,3 +1,5 @@
+using Granite.Utilities;
+
 namespace Granite.Graphics;
 
 public abstract class Object2D
@@ -55,8 +57,12 @@ public abstract class Object2D
             if (value < 0) return;
             int prevWidth = _width;
             _width = value;
+
             Model = new Cell[_height, _width];
+            Model.Init(_width, _height);
+
             SculptModel();
+
             SizeChangedEvent?.Invoke(
                 this,
                 new SizeChangedData()
@@ -65,6 +71,7 @@ public abstract class Object2D
                     PrevWidth = prevWidth,
                     PrevHeight = _height,
                 });
+
             InvokeEntireModelChangedEvent();
         }
     }
@@ -77,8 +84,12 @@ public abstract class Object2D
             if (value < 0) return;
             int prevHeight = _height;
             _height = value;
+
             Model = new Cell[_height, _width];
+            Model.Init(_width, _height);
+
             SculptModel();
+            
             SizeChangedEvent?.Invoke(
                 this,
                 new SizeChangedData()
@@ -87,6 +98,7 @@ public abstract class Object2D
                     PrevWidth = _width,
                     PrevHeight = prevHeight,
                 });
+
             InvokeEntireModelChangedEvent();
         }
     }

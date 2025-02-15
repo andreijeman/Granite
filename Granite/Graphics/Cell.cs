@@ -5,9 +5,4 @@ public struct Cell
     public char Character;
     public RgbColor ForegroundRgbColor;
     public RgbColor BackgroundRgbColor;
-
-    public Cell()
-    {
-        Character = ' ';
-    }
 }

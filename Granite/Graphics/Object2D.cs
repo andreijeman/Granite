@@ -1,6 +1,6 @@
 namespace Granite.Graphics;
 
-public class Object2D
+public abstract class Object2D
 {
     public Cell[,] Model { get; private set; } = new Cell[0, 0];
     
@@ -90,18 +90,8 @@ public class Object2D
             InvokeEntireModelChangedEvent();
         }
     }
-    
-    public virtual void SculptModel()
-    {
-        for (int i = 0; i < _height; i++)
-        {
-            for (int j = 0; j < _width; j++)
-            {
-                Model[i, j] = new Cell();
 
-            }
-        }
-    }
+    public abstract void SculptModel();
 
     public event Action<Object2D, ModelChangedData>? ModelChangedEvent;
     public event Action<Object2D, PositionChangedData>? PositionChangedEvent;

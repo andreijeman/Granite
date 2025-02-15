@@ -1,6 +1,6 @@
 namespace Granite.Graphics;
 
-public sealed class Frame : Object2D
+public class Frame : Object2D
 {
     private List<Object2D> _objects = new List<Object2D>();
 
@@ -81,7 +81,7 @@ public sealed class Frame : Object2D
             for (int j = 0; j < this.Width / 2; j++)
             {
                 cell.Character = ' ';
-                cell.BackgroundRgbColor = (i + j) % 2 == 0 ? new Cell.RgbColor() {R = 64, G = 64, B = 64 } : new Cell.RgbColor() {R = 128, G = 128, B = 128 };
+                cell.BackgroundRgbColor = (i + j) % 2 == 0 ? new RgbColor() {R = 64, G = 64, B = 64 } : new RgbColor() {R = 128, G = 128, B = 128 };
 
                 this.Model[i, 2 * j] = cell;
                 this.Model[i, 2 * j + 1] = cell;
@@ -94,7 +94,7 @@ public sealed class Frame : Object2D
         data.SectTop = LocalTop + data.SectY1;
         OnModelChangedEvent(this, data);
         
-        RectMath.Rect frameSect = new RectMath.Rect()
+        Rect frameSect = new Rect()
         {
             X1 = data.SectLeft,
             Y1 = data.SectTop,
@@ -105,14 +105,14 @@ public sealed class Frame : Object2D
         foreach (var obj in _objects)
         {
             if (frameSect.TryGetIntersection(
-                    new RectMath.Rect()
+                    new Rect()
                     {
                         X1 = obj.Left,
                         Y1 = obj.Top,
                         X2 = obj.Left + obj.Width - 1,
                         Y2 = obj.Top + obj.Height - 1
                     },
-                    out RectMath.Rect isect))
+                    out Rect isect))
             {
                 obj.InvokeModelChangedEvent(new ModelChangedData() 
                 {
@@ -131,34 +131,34 @@ public sealed class Frame : Object2D
     private void OnModelChangedEvent(Object2D sender, ModelChangedData data)
     {
         if (RectMath.TryGetIntersection(
-                new RectMath.Rect()
+                new Rect()
                 {
                     X1 = LocalLeft,
                     Y1 = LocalTop,
                     X2 = LocalLeft + Width - 1,
                     Y2 = LocalTop + Height - 1
                 },
-                new RectMath.Rect()
+                new Rect()
                 {
                     X1 = data.SectLeft,
                     Y1 = data.SectTop,
                     X2 = data.SectLeft + data.SectX2 - data.SectX1,
                     Y2 = data.SectTop + data.SectY2 - data.SectY1
                 },
-                out RectMath.Rect isect))
+                out Rect isect))
         {
-            List<RectMath.Rect> sections = new List<RectMath.Rect>();
+            List<Rect> sections = new List<Rect>();
             sections.Add(isect);
             
             var enumerator = _objects.GetEnumerator();
             while (enumerator.MoveNext() && enumerator.Current != sender)
             {
                 var obj = enumerator.Current;
-                List<RectMath.Rect> temp = new List<RectMath.Rect>();
+                List<Rect> temp = new List<Rect>();
                 foreach (var sect in sections)
                 {
                     if (sect.TryGetUncoveredSections(
-                            new RectMath.Rect()
+                            new Rect()
                             {
                                 X1 = obj.Left,
                                 Y1 = obj.Top,
@@ -193,14 +193,14 @@ public sealed class Frame : Object2D
     {
        FreeSection(
            data.Object, 
-           new RectMath.Rect()
+           new Rect()
            {
                X1 = data.PrevLeft,
                Y1 = data.PrevTop,
                X2 = data.PrevLeft + data.Object.Width - 1,
                Y2 = data.PrevTop + data.Object.Height - 1
            },
-           new RectMath.Rect()
+           new Rect()
            {
                X1 = data.Object.Left,
                Y1 = data.Object.Top,
@@ -213,14 +213,14 @@ public sealed class Frame : Object2D
     {
         FreeSection(
             data.Object, 
-            new RectMath.Rect()
+            new Rect()
             {
                 X1 = data.Object.Left,
                 Y1 = data.Object.Top,
                 X2 = data.Object.Left + data.PrevWidth - 1,
                 Y2 = data.Object.Top + data.PrevHeight - 1
             },
-            new RectMath.Rect()
+            new Rect()
             {
                 X1 = data.Object.Left,
                 Y1 = data.Object.Top,
@@ -229,10 +229,10 @@ public sealed class Frame : Object2D
             });
     }
 
-    private void FreeSection(Object2D pivotObj, RectMath.Rect prevSect, RectMath.Rect newSect)
+    private void FreeSection(Object2D pivotObj, Rect prevSect, Rect newSect)
     {
         if(RectMath.TryGetIntersection(
-               new RectMath.Rect()
+               new Rect()
                {
                    X1 = LocalLeft,
                    Y1 = LocalTop,
@@ -248,11 +248,11 @@ public sealed class Frame : Object2D
                 while (enumerator.MoveNext() && enumerator.Current != pivotObj)
                 {
                     var obj = enumerator.Current;
-                    List<RectMath.Rect> temp = new List<RectMath.Rect>();
+                    List<Rect> temp = new List<Rect>();
                     foreach (var sect in sections)
                     {
                         if (sect.TryGetUncoveredSections(
-                                new RectMath.Rect()
+                                new Rect()
                                 {
                                     X1 = obj.Left,
                                     Y1 = obj.Top,
@@ -270,7 +270,7 @@ public sealed class Frame : Object2D
                 while (enumerator.MoveNext())
                 {
                     var obj = enumerator.Current;
-                    var objRect = new RectMath.Rect()
+                    var objRect = new Rect()
                     {
                         X1 = obj.Left,
                         Y1 = obj.Top,
@@ -278,7 +278,7 @@ public sealed class Frame : Object2D
                         Y2 = obj.Top + obj.Height - 1
                     };
                     
-                    List<RectMath.Rect> temp = new List<RectMath.Rect>();
+                    List<Rect> temp = new List<Rect>();
                     foreach (var sect in sections)
                     {
                         if (sect.TryGetIntersection(objRect, out var result))

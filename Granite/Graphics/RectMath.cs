@@ -1,12 +1,7 @@
 namespace Granite.Graphics;
 
 public static class RectMath
-{ 
-    public struct Rect
-    {
-        public int X1, Y1, X2, Y2;
-    }
-    
+{   
     public static bool Intersects(this Rect rect, Rect rect2)
     {
         return rect.X1 <= rect2.X2 &&

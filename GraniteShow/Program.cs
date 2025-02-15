@@ -1,99 +1,25 @@
+using Granite.Controls;
+using Granite.Entities;
 using Granite.Graphics;
-using Granite.Utilities;
 
-Frame mainFrame = new Frame()
-{
-    Width = Console.BufferWidth,
-    Height = Console.BufferHeight,
-};
+InteractiveFrame c = new InteractiveFrame { Width = 50, Height = 50 };
 
-mainFrame.ModelChangedEvent += Output.OnModelChangedEvent;
+Button b1 = new Button { Width = 6, Height = 2, Left = 3, Top = 3 };
+b1.PressedEvent += () => Console.WriteLine("button 1");
+Button b2 = new Button { Width = 6, Height = 2, Left = 15, Top = 3 };
+b2.PressedEvent += () => Console.WriteLine("button 2");
 
-List<Object2D> list = new List<Object2D>();
-int n = 10;
-var rnd = new Random();
+c.AddFront(b1);
+c.AddFront(b2);
+c.Bind();
+c.ModelChangedEvent += Output.OnModelChangedEvent;
+c.InvokeEntireModelChangedEvent();
 
-for (int i = 0; i < n; i++)
-{
-    var obj = new MyObject()
-    {
-      Left = rnd.Next(mainFrame.Width),
-      Top = rnd.Next(mainFrame.Height),
-      Width = rnd.Next(mainFrame.Width / 4),
-      Height = rnd.Next(mainFrame.Height / 4),
-      Color = new Cell.RgbColor()
-        {
-          R = rnd.Next(255), 
-          G = rnd.Next(255), 
-          B = rnd.Next(255)
-        }
-    };
-
-    list.Add(obj);
-    mainFrame.AddFront(obj);
-}
+ConsoleKeyListener.Start();
 
 
-Console.Clear();
-Console.CursorVisible = false;
-mainFrame.InvokeEntireModelChangedEvent();
-while (true)
-{
-    var key = Console.ReadKey(true).Key;
-    switch (key)
-    {
-        case ConsoleKey.LeftArrow: list[0].Left--; break;
-        case ConsoleKey.RightArrow: list[0].Left++; break;
-        case ConsoleKey.UpArrow: list[0].Top--; break;
-        case ConsoleKey.DownArrow: list[0].Top++; break;
-        case ConsoleKey.Q: list[0].Height++; break;
-        case ConsoleKey.W: list[0].Height--; break;
-        case ConsoleKey.A: mainFrame.BringForward(list[0]); break;
-        case ConsoleKey.S: mainFrame.SendBackward(list[0]); break;
-        case ConsoleKey.Enter:
-            foreach (var obj in list)
-            {
-                obj.Left = rnd.Next(mainFrame.Width);
-                obj.Top = rnd.Next(mainFrame.Height);
-                obj.Width = rnd.Next(mainFrame.Width / 4);
-                obj.Height = rnd.Next(mainFrame.Height / 4);
-            }
-
-            break;
-        default: break;
-    }
-}
+Thread.Sleep(100000);
 
 
-public class MyObject : Object2D
-{
-    private Cell.RgbColor _color;
 
-    public Cell.RgbColor Color
-    {
-        get => _color;
-        set
-        {
-            _color = value;
-            SculptModel();
-        }
-    }
 
-    public override void SculptModel()
-    {
-        this.Model.SculptRectangle(
-            new RectMath.Rect()
-            {
-                X1 = 0, 
-                Y1 = 0, 
-                X2 = this.Width - 1, 
-                Y2 = this.Height - 1
-            },
-            new Cell()
-            {
-                BackgroundRgbColor = Color,
-                ForegroundRgbColor = Color,
-                Character = ' '
-            });
-    }
-}

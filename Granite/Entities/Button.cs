@@ -46,4 +46,9 @@ public class Button : Entity
     {
         if (key == ConsoleKey.Enter) PressedEvent?.Invoke();
     }
+
+    protected override void impl_InvokeModelChangedEvent()
+    {
+        InvokeEntireModelChangedEvent();
+    }
 }

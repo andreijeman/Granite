@@ -84,16 +84,14 @@ public static class ModelBuilder
         model.SculptRectangle(new Rect { X1 = section.X1, Y1 = section.Y1 + 1, X2 = section.X1, Y2 = section.Y2 - 1 }, border.Left);
         model.SculptRectangle(new Rect { X1 = section.X2, Y1 = section.Y1 + 1, X2 = section.X2, Y2 = section.Y2 - 1 }, border.Right);
 
-        model[section.X1, section.Y1].Character = border.LeftTop;
-        model[section.X1, section.Y1].Character = border.RightTop;
-        model[section.X1, section.Y1].Character = border.RightBottom;
-        model[section.X1, section.Y1].Character = border.LeftBottom;
+        model[section.Y1, section.X1].Character = border.LeftTop;
+        model[section.Y1, section.X2].Character = border.RightTop;
+        model[section.Y2, section.X2].Character = border.RightBottom;
+        model[section.Y2, section.X1].Character = border.LeftBottom;
     }
 
     public static void SculptText(this Cell[,] model, Rect section, string text, RgbColor color)
     {
-       // (int x, int y) = section.FindCenteredTextPosition(text);
-
         int t = 0;
 
         for (int i = section.X1; i <= section.Y2; i++)

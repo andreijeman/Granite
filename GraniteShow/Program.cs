@@ -19,11 +19,11 @@ btn2.PressedEvent += () => Console.WriteLine("button 2");
 
 //---------------------------------------------------------------------------------------------------
 
-Scroll scrl = new Scroll { Width = 10, Height = 5, Left = 20, Top = 3 };
-for(int i = 0; i < 100; i++)
+Map scrl = new Map { Width = 20, Height = 10, Left = 20, Top = 3 };
+for(int i = 0; i < 10; i++)
 {
-    Label l = new Label { Width = 8, Height = 2, Text = $"Label-{i}" };
-    scrl.AddDown(l);
+    Label l = new Label { Width = 8, Height = 2, Text = $"Label-{i}", Top = (2 + 1) * i };
+    scrl.AddBack(l);
 }
 
 

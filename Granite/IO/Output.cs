@@ -11,7 +11,7 @@ public static class Output
     public static void OnDrawRequested(BaseObject sender, DrawEventArgs args)
     {
         _semaphore.Wait();
-
+        //Console.ReadKey(true);
         try
         {
             for (int i = args.Section.Y1; i <= args.Section.Y2; i++)

@@ -1,7 +1,6 @@
 ﻿using Granite.Graphics.Components;
 using Granite.Graphics.EventArgs;
 using Granite.Graphics.Maths;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Granite.Graphics.Objects;
 
@@ -13,8 +12,7 @@ public class BaseObject
     protected int _top;
 
     public event Action<BaseObject, DrawEventArgs>? DrawRequested;
-    public event Action<BaseObject>? PositionChanged;
-    public event Action<BaseObject>? SizeChanged;
+    public event Action<BaseObject>? LayoutChanged;
 
     public virtual Model Model
     {
@@ -22,7 +20,7 @@ public class BaseObject
         set
         {
             _model = value;
-            InvokeSizeChanged();
+            InvokeLayoutChanged();
         }
     }
 
@@ -32,7 +30,7 @@ public class BaseObject
         set
         {
             _left = value;
-            InvokePositionChanged();
+            InvokeLayoutChanged();
         }
     }
     public virtual int Top
@@ -41,7 +39,7 @@ public class BaseObject
         set
         {
             _top = value;
-            InvokePositionChanged();
+            InvokeLayoutChanged();
         }
     }
 
@@ -68,8 +66,7 @@ public class BaseObject
     }
 
     protected void InvokeDrawRequested(DrawEventArgs args) => DrawRequested?.Invoke(this, args);
-    protected void InvokePositionChanged() => PositionChanged?.Invoke(this);
-    protected void InvokeSizeChanged() => SizeChanged?.Invoke(this);
+    protected void InvokeLayoutChanged() => LayoutChanged?.Invoke(this);
 
     public int Width { get => _model.Width; }
     public int Height { get => _model.Height; }

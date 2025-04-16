@@ -1,28 +1,53 @@
-﻿using Granite.Graphics.Components;
+﻿using System.Reflection;
+using Granite.Graphics.Components;
 using Granite.Graphics.Maths;
 namespace Granite.Graphics.Utilities;
 
 public static class ModelBuilder
 {
-    public static Model Fill(this Model model, char character, Color foreground, Color background)
+    public static Model Init(this Model model)
     {
         for (int i = 0; i < model.Height; i++)
         {
             for (int j = 0; j < model.Width; j++)
             {
-                model.Data[i, j] = new Cell { Character = character, Foreground = foreground, Background = background };
+                model.Data[i, j] = new Cell() { Character = ' '};
             }
         }
 
         return model;
     }
 
-    public static Model FillDefault(this Model model)
+    public static Model Fill(this Model model, char character, Color foreground, Color background)
     {
-        return model.Fill(' ', default, default);
+        for (int i = 0; i < model.Height; i++)
+        {
+            for (int j = 0; j < model.Width; j++)
+            {
+                model.Data[i, j].Character = character;
+                model.Data[i, j].Foreground = foreground;
+                model.Data[i, j].Background = background;
+            }
+        }
+
+        return model;
     }
 
-    public static void DrawChessboard(this Model model, Color color1, Color color2)
+    public static Model Fill(this Model model, Color color)
+    {
+        for (int i = 0; i < model.Height; i++)
+        {
+            for (int j = 0; j < model.Width; j++)
+            {
+                model.Data[i, j].Foreground = color;
+                model.Data[i, j].Background = color;
+            }
+        }
+
+        return model;
+    }
+
+    public static Model DrawChessboard(this Model model, Color color1, Color color2)
     {
         Color color;
 
@@ -36,5 +61,7 @@ public static class ModelBuilder
                 model.Data[i, 2 * j + 1].Background= color;
             }
         }
+
+        return model;
     }
 }

@@ -1,7 +1,7 @@
-namespace Granite.Graphics;
+﻿namespace Granite.Graphics.Maths;
 
 public static class RectMath
-{   
+{
     public static bool Intersects(this Rect rect, Rect rect2)
     {
         return rect.X1 <= rect2.X2 &&
@@ -9,11 +9,11 @@ public static class RectMath
                rect.Y1 <= rect2.Y2 &&
                rect.Y2 >= rect2.Y1;
     }
-    
+
     public static bool TryGetIntersection(this Rect rect, Rect rect2, out Rect result)
     {
         result = new Rect();
-        
+
         if (rect.Intersects(rect2))
         {
             result.X1 = Math.Max(rect.X1, rect2.X1);
@@ -23,7 +23,7 @@ public static class RectMath
 
             return true;
         }
-        
+
         return false;
     }
 
@@ -36,7 +36,7 @@ public static class RectMath
             results.Add(rect);
             return true;
         }
-    
+
         // Top section
         if (rect.Y1 < sect.Y1)
         {
@@ -48,7 +48,7 @@ public static class RectMath
                 Y2 = sect.Y1 - 1,
             });
         }
-        
+
         // Bottom section
         if (rect.Y2 > sect.Y2)
         {
@@ -60,7 +60,7 @@ public static class RectMath
                 Y2 = rect.Y2,
             });
         }
-        
+
         // Left section
         if (rect.X1 < sect.X1)
         {
@@ -68,11 +68,11 @@ public static class RectMath
             {
                 X1 = rect.X1,
                 Y1 = sect.Y1,
-                X2 = sect.X1 - 1, 
+                X2 = sect.X1 - 1,
                 Y2 = sect.Y2,
             });
         }
-        
+
         // Right section
         if (rect.X2 > sect.X2)
         {
@@ -84,7 +84,7 @@ public static class RectMath
                 Y2 = sect.Y2,
             });
         }
-        
+
         if (results.Count > 0) return true;
         return false;
     }

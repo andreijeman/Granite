@@ -11,9 +11,9 @@ Frame frame = new Frame
     Model = new Model(64, 32).Init().DrawChessboard(new Color("808080"), new Color("E0E0E0"))
 };
 
-frame.DrawRequested += Output.OnDrawRequested;
+frame.DrawRequested += ConsoleOutput.OnDrawRequested;
 
-BaseObject obj = new BaseObject
+GObject obj = new GObject
 {
     Model = new Model(4, 2).Init().DrawChessboard(new Color("FF3399"), new Color("FF66B2")),
     Left = 2,
@@ -24,7 +24,7 @@ var rnd = new Random();
 
 for(int i = 0; i < 100; i++)
 {
-    frame.Add(new BaseObject
+    frame.Add(new GObject
     {
         Model = new Model(rnd.Next(16), rnd.Next(8)).Init().Fill(new Color($"{rnd.Next(111111, 999999)}")),
         Left = rnd.Next(frame.Width),

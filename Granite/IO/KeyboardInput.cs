@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-
-namespace Granite.IO;
+﻿namespace Granite.IO;
 
 public static class ConsoleKeyListener
 {
-    public static event Action<ConsoleKey>? KeyPressedEvent;
+    public static event Action<ConsoleKey>? KeyPressed;
 
     private static readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
@@ -17,7 +15,7 @@ public static class ConsoleKeyListener
             if (Console.KeyAvailable)
             {
                 key = Console.ReadKey(intercept: true).Key;
-                KeyPressedEvent?.Invoke(key);   
+                KeyPressed?.Invoke(key);   
             }
 
             await Task.Delay(20);
@@ -26,7 +24,7 @@ public static class ConsoleKeyListener
 
     public static void Start()
     {
-        Task.Run(async () => await ListenAsync(_cancellationTokenSource.Token));
+        Task.Run(() => ListenAsync(_cancellationTokenSource.Token));
     }
 
     public static void Stop()

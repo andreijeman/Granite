@@ -2,19 +2,18 @@
 using Granite.Graphics.EventArgs;
 using Granite.Graphics.Maths;
 using Granite.Graphics.Objects;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Granite.Graphics.Frames;
 
-public class Frame : BaseObject
+public class Frame : GObject
 {
     private int _originLeft;
     private int _originTop;
 
     private Rect _mainRect;
 
-    private List<BaseObject> _objects = new();
-    private Dictionary<BaseObject, Rect> _objectRectDict = new();
+    private List<GObject> _objects = new();
+    private Dictionary<GObject, Rect> _objectRectDict = new();
 
     public override Model Model
     {
@@ -63,9 +62,9 @@ public class Frame : BaseObject
         }
     }
 
-    public void Add(BaseObject obj) => Add(obj, _objects.Count);
+    public void Add(GObject obj) => Add(obj, _objects.Count);
 
-    public void Add(BaseObject obj, int layer)
+    public void Add(GObject obj, int layer)
     {
         if (!_objectRectDict.ContainsKey(obj))
         {
@@ -79,7 +78,7 @@ public class Frame : BaseObject
         }
     }
 
-    public void BringForward(BaseObject obj)
+    public void BringForward(GObject obj)
     {
         int index = _objects.IndexOf(obj);
 
@@ -93,7 +92,7 @@ public class Frame : BaseObject
         obj.Draw();
     }
 
-    public void SendBackward(BaseObject obj)
+    public void SendBackward(GObject obj)
     {
         int index = _objects.IndexOf(obj);
 
@@ -104,10 +103,13 @@ public class Frame : BaseObject
             _objects[index - 1] = temp;
         }
 
-        DrawFrameRect(_objectRectDict[obj]);
+        if (_mainRect.TryGetIntersection(_objectRectDict[obj], out var intersection))
+        {
+            DrawFrameRect(intersection);
+        }
     }
 
-    private void OnDrawRequested(BaseObject sender, DrawEventArgs args)
+    private void OnDrawRequested(GObject sender, DrawEventArgs args)
     {
         DrawModelRects(
             GetModelDrawableRects(sender, 
@@ -115,7 +117,7 @@ public class Frame : BaseObject
             args.Model, args.Left, args.Top);
     }
 
-    private void OnLayoutChanged(BaseObject sender)
+    private void OnLayoutChanged(GObject sender)
     {
         var oldRect = _objectRectDict[sender];
         var newRect = GetObjectRect(sender);
@@ -135,7 +137,7 @@ public class Frame : BaseObject
         sender.Draw();
     }
 
-    private List<Rect> GetModelDrawableRects(BaseObject target, Rect targetRect)
+    private List<Rect> GetModelDrawableRects(GObject target, Rect targetRect)
     {
         List<Rect> rects = new List<Rect>();
 
@@ -193,7 +195,7 @@ public class Frame : BaseObject
         _mainRect = temp;
     }
 
-    private static Rect GetObjectRect(BaseObject obj)
+    private static Rect GetObjectRect(GObject obj)
     {
         return new Rect
         {

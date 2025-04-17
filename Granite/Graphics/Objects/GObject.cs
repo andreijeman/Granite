@@ -4,15 +4,15 @@ using Granite.Graphics.Maths;
 
 namespace Granite.Graphics.Objects;
 
-public class BaseObject 
+public class GObject 
 {
     protected Model _model = new(0, 0);
 
     protected int _left;
     protected int _top;
 
-    public event Action<BaseObject, DrawEventArgs>? DrawRequested;
-    public event Action<BaseObject>? LayoutChanged;
+    public event Action<GObject, DrawEventArgs>? DrawRequested;
+    public event Action<GObject>? LayoutChanged;
 
     public virtual Model Model
     {

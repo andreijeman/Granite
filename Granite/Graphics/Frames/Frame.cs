@@ -33,7 +33,7 @@ public class Frame : GObject
         }
 
         DrawModelRects(
-            GetModelDrawableRects(this, _mainRect),
+            GetObjectDrawableRects(this, _mainRect),
             _model, _originLeft, _originTop);
     }
 
@@ -111,10 +111,10 @@ public class Frame : GObject
 
     private void OnDrawRequested(GObject sender, DrawEventArgs args)
     {
-        DrawModelRects(
-            GetModelDrawableRects(sender, 
-                ModelSectionToRect(args.Section, args.Left, args.Top)),
-            args.Model, args.Left, args.Top);
+        var rect = ModelSectionToRect(args.Section, args.Left, args.Top);
+        var rects = GetObjectDrawableRects(sender, rect);
+        
+        DrawModelRects(rects, args.Model, args.Left, args.Top);
     }
 
     private void OnLayoutChanged(GObject sender)
@@ -125,11 +125,11 @@ public class Frame : GObject
 
         if (_mainRect.TryGetIntersection(oldRect, out var intersection))
         {
-            if (intersection.TryGetUncoveredSections(newRect, out var sections))
+            if (intersection.TryGetUncoveredSections(newRect, out var rects))
             {
-                foreach (var section in sections)
+                foreach (var rect in rects)
                 {
-                    DrawFrameRect(section);
+                    DrawFrameRect(rect);
                 }
             }
         }
@@ -137,7 +137,7 @@ public class Frame : GObject
         sender.Draw();
     }
 
-    private List<Rect> GetModelDrawableRects(GObject target, Rect targetRect)
+    private List<Rect> GetObjectDrawableRects(GObject target, Rect targetRect)
     {
         List<Rect> rects = new List<Rect>();
 
@@ -150,9 +150,9 @@ public class Frame : GObject
                 var obj = _objects[i];
                 List<Rect> temp = new List<Rect>();
 
-                foreach (var sect in rects)
+                foreach (var rect in rects)
                 {
-                    if (sect.TryGetUncoveredSections(_objectRectDict[obj], out var results))
+                    if (rect.TryGetUncoveredSections(_objectRectDict[obj], out var results))
                     {
                         temp.AddRange(results);
                     }
@@ -164,16 +164,16 @@ public class Frame : GObject
         return rects;
     }
 
-    private void DrawModelRects(List<Rect> rects, Model model, int left, int top)
+    private void DrawModelRects(List<Rect> rects, Model model, int modelLeft, int modelTop)
     {
         foreach (var rect in rects)
         {
             InvokeDrawRequested(new DrawEventArgs
             {
                 Model = model,
-                Section = RectToModelSection(rect, left, top),
-                Left = _left + rect.X1 - _originLeft,
-                Top = _top + rect.Y1 - _originTop
+                Section = RectToModelSection(rect, modelLeft, modelTop),
+                Left = _left + modelLeft - _originLeft,
+                Top = _top + modelTop - _originTop
             });
         }
     }
@@ -187,12 +187,12 @@ public class Frame : GObject
         {
             obj.Draw();
         }
-
-        DrawModelRects(
-            GetModelDrawableRects(this, _mainRect),
-            _model, _originLeft, _originTop);
-
+        
         _mainRect = temp;
+
+        var rects = GetObjectDrawableRects(this, rect);
+        DrawModelRects(rects, _model, _originLeft, _originTop);
+
     }
 
     private static Rect GetObjectRect(GObject obj)
@@ -228,25 +228,25 @@ public class Frame : GObject
         };
     }
 
-    private static Rect ModelSectionToRect(Rect section, int left, int top)
+    private static Rect ModelSectionToRect(Rect section, int modelLeft, int modelTop)
     {
         return new Rect
         {
-            X1 = left + section.X1,
-            Y1 = top + section.Y1,
-            X2 = left + section.X2,
-            Y2 = top + section.Y2
+            X1 = modelLeft + section.X1,
+            Y1 = modelTop + section.Y1,
+            X2 = modelLeft + section.X2,
+            Y2 = modelTop + section.Y2
         };
     }
 
-    private static Rect RectToModelSection(Rect section, int left, int top)
+    private static Rect RectToModelSection(Rect rect, int modelLeft, int modelTop)
     {
         return new Rect
         {
-            X1 = section.X1 - left,
-            Y1 = section.Y1 - top,
-            X2 = section.X2 - left,
-            Y2 = section.Y2 - top
+            X1 = rect.X1 - modelLeft,
+            Y1 = rect.Y1 - modelTop,
+            X2 = rect.X2 - modelLeft,
+            Y2 = rect.Y2 - modelTop
         };
     }
 }

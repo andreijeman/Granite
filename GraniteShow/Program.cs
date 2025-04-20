@@ -11,8 +11,6 @@ Frame frame = new Frame
     Model = new Model(64, 32).Init().DrawChessboard(new Color("808080"), new Color("E0E0E0"))
 };
 
-frame.DrawRequested += ConsoleOutput.OnDrawRequested;
-
 GObject obj = new GObject
 {
     Model = new Model(4, 2).Init().DrawChessboard(new Color("FF3399"), new Color("FF66B2")),
@@ -20,29 +18,32 @@ GObject obj = new GObject
     Top = 2,
 };
 
-var rnd = new Random(); 
+var rnd = new Random();
 
-for(int i = 0; i < 100; i++)
+int n = 20;
+for(int i = 0; i < n; i++)
 {
     frame.Add(new GObject
     {
-        Model = new Model(rnd.Next(16), rnd.Next(8)).Init().Fill(new Color($"{rnd.Next(111111, 999999)}")),
+        Model = new Model(rnd.Next(16), rnd.Next(8))
+            .Init()
+            .Fill(new Color($"{rnd.Next(111111, 999999)}")),
         Left = rnd.Next(frame.Width),
         Top = rnd.Next(frame.Height),
     });
 
 }
 
+ConsoleOutput.Add(frame);
 frame.Add(obj);
-
-
 frame.Draw();
 
-var target = obj;
+    
+var target = frame;
 
 while (true)
 {
-    var key = Console.ReadKey(true).Key;
+      var key = Console.ReadKey(true).Key;
 
     switch(key)
     {

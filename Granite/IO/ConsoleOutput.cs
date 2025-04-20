@@ -1,33 +1,74 @@
-﻿using Granite.Graphics.Components;
+﻿using System.Text;
+using Granite.Graphics.Components;
 using Granite.Graphics.EventArgs;
+using Granite.Graphics.Frames;
 using Granite.Graphics.Objects;
+using Granite.Graphics.Utilities;
 
 namespace Granite.IO;
 
 public static class ConsoleOutput 
 {
     private static object _locker = new();
-
-    public static void OnDrawRequested(GObject sender, DrawEventArgs args)
+    
+    private static Frame _frame = new();
+    
+    static ConsoleOutput()
     {
-        lock (_locker) 
+        _frame.DrawRequested += OnDrawRequested;
+        Task.Run(OnBufferSizeChanged);
+    }
 
-        for (int i = args.Section.Y1; i <= args.Section.Y2; i++)
+    public static void Add(GObject obj)
+    {
+        _frame.Add(obj);
+    }
+
+    private static async Task OnBufferSizeChanged()
+    {
+        while (true)
         {
-            Console.SetCursorPosition(args.Left, args.Top++);
-
-            for (int j = args.Section.X1; j <= args.Section.X2; j++)
+            if (_frame.Width != Console.BufferWidth - 1 || _frame.Height != Console.BufferHeight - 1)
             {
-                Cell cell = args.Model.Data[i, j];
+                _frame.Model = new Model(Console.BufferWidth - 1, Console.BufferHeight - 1).Init();
+                _frame.Draw();
+            }
 
-                Console.Write(
-                    RgbToAnsiESForeground(cell.Foreground.R, cell.Foreground.G, cell.Foreground.B) +
-                    RgbToAnsiESBackground(cell.Background.R, cell.Background.G, cell.Background.B) +
-                    cell.Character);
+            await Task.Delay(1000);
+        }
+    }
+    
+    private static void OnDrawRequested(GObject sender, DrawEventArgs args)
+    {
+        lock (_locker)
+        {
+            try
+            {
+                for (int i = args.Section.Y1; i <= args.Section.Y2; i++)
+                {
+                    Console.SetCursorPosition(args.Left + args.Section.X1, args.Top++ + args.Section.Y1);
+                    StringBuilder result = new();
+
+                    for (int j = args.Section.X1; j <= args.Section.X2; j++)
+                    {
+                        Cell cell = args.Model.Data[i, j];
+
+                        result.Append(
+                            RgbToAnsiEsForeground(cell.Foreground.R, cell.Foreground.G, cell.Foreground.B) +
+                            RgbToAnsiEsBackground(cell.Background.R, cell.Background.G, cell.Background.B) +
+                            cell.Character);
+                    }
+
+                    Console.Write(result);
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
     }
-
-    public static string RgbToAnsiESForeground(int r, int g, int b) => $"\u001b[38;2;{r};{g};{b}m";
-    public static string RgbToAnsiESBackground(int r, int g, int b) => $"\u001b[48;2;{r};{g};{b}m";
+    
+    private static string RgbToAnsiEsForeground(int r, int g, int b) => $"\u001b[38;2;{r};{g};{b}m";
+    private static string RgbToAnsiEsBackground(int r, int g, int b) => $"\u001b[48;2;{r};{g};{b}m";
 }

@@ -42,8 +42,19 @@ var btn2 = new Button(new ButtonArgs
     keyActionDict = { { ConsoleKey.Enter, () => Console.WriteLine("Entered!") } }
 });
 
+var label = new Label(new LabelArgs
+{
+    Width = 20,
+    Height = 1,
+    Left = 1,
+    Color = new Color("CCCC00"),
+    Text = "This is a label",
+});
+
 frame.Add(btn.GObject);
 frame.Add(btn2.GObject);
+frame.Add(label);
+
 ctrlHolder.Add(btn.Controller);
 ctrlHolder.Add(btn2.Controller);
 frame.Draw();

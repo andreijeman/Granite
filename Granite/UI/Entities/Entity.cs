@@ -8,12 +8,16 @@ namespace Granite.UI.Entities;
 
 public abstract class Entity
 {
-    public readonly GObject GObject = new();
-    public readonly Controller Controller = new();
+    public GObject GObject { get; protected set; } = new();
+    public Controller Controller { get; protected set; } = new();
     
     public Entity(EntityArgs args)
     {
-        Controller.Focused += OnFocused;
+        Controller.Focused += (isFocused) =>
+        {
+            if (isFocused) OnFocused();
+            else OnUnfocused();
+        }; 
 
         foreach (var pair in args.keyActionDict)
         {
@@ -25,8 +29,8 @@ public abstract class Entity
         GObject.Model = new Model(args.Width, args.Height).Init();
     }
     
-    protected abstract void SculptModel();
-    protected abstract void OnFocused(bool isFocused);
+    protected abstract void OnFocused();
+    protected abstract void OnUnfocused();
     
     public bool IsFocused { get => Controller.IsFocused; }
 }

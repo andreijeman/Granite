@@ -3,19 +3,20 @@ using Granite.Graphics.Components;
 using Granite.Graphics.Frames;
 using Granite.Graphics.Utilities;
 using Granite.IO;
+using Granite.UI;
 using Granite.UI.Entities;
 using Granite.UI.Entities.Args;
+using Granite.UI.Utilities;
 
-KeyboardInput.Start();
-
-var ctrlHolder = new ControllerHolder();
-KeyboardInput.KeyPressed += ctrlHolder.OnKeyPressed; 
-
-var frame = new Frame()
+var container = new Container(new ContainerArgs
 {
-    Model = new Model(40, 20).Init().DrawChessboard(new Color("404040"), new Color("C0C0C0"))
-};
-ConsoleOutput.Add(frame);
+    Width = 40,
+    Height = 20,
+    Backgound = new Color("CCFF99"),
+    BackgroundFocused = new Color("0000CC")
+});
+
+container.BindToIO();
 
 
 var btn = new Button(new ButtonArgs
@@ -51,15 +52,12 @@ var label = new Label(new LabelArgs
     Text = "This is a label",
 });
 
-frame.Add(btn.GObject);
-frame.Add(btn2.GObject);
-frame.Add(label);
+container.Add(btn);
+container.Add(btn2);
+container.Add(label);
 
-ctrlHolder.Add(btn.Controller);
-ctrlHolder.Add(btn2.Controller);
-frame.Draw();
+container.Frame.Draw();
 
 await Task.Delay(100000);
 
 
-Console.ReadKey();

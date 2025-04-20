@@ -5,7 +5,7 @@ public class Controller
 {
     protected Dictionary<ConsoleKey, Action?> _keyActionDict = new();
     public event Action<bool>? Focused;
-    protected bool _isFocused;
+    protected bool _isFocused = false;
 
     public virtual void OnKeyPressed(ConsoleKey key)
     {

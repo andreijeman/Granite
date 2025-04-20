@@ -20,7 +20,7 @@ public static class ConsoleOutput
         Task.Run(OnBufferSizeChanged);
     }
 
-    public static void Add(GObject obj)
+    public static void Bind(GObject obj)
     {
         _frame.Add(obj);
     }

@@ -32,14 +32,19 @@ public class Frame : GObject
             obj.Draw();
         }
 
-        DrawModelRects(
-            GetObjectDrawableRects(this, _mainRect),
-            _model, _originLeft, _originTop);
+        DrawBackground();
     }
 
     public override void Draw(Rect section)
     {
         DrawFrameRect(GetMainRect(this, section));
+    }
+
+    public void DrawBackground()
+    {
+        DrawModelRects(
+            GetObjectDrawableRects(this, _mainRect),
+            _model, _originLeft, _originTop);
     }
 
     public int OriginLeft

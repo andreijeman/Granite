@@ -1,11 +1,33 @@
-﻿namespace Granite.IO;
+﻿using Granite.Controls.Controllers;
+using Granite.Controls.Holders;
+
+namespace Granite.IO;
 
 public static class KeyboardInput
 {
-    public static event Action<ConsoleKey>? KeyPressed;
+    public static bool IsRunning { get; private set; } = false;
+    private static ControllerHolder _ctrlHolder = new();
+    private static event Action<ConsoleKey>? KeyPressed;
 
     private static readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
+    static KeyboardInput()
+    {
+        KeyPressed += _ctrlHolder.OnKeyPressed;
+        _ctrlHolder.OnFocused(true);   
+    }
+
+    public static void Bind(Controller ctrl)
+    {
+        if (!IsRunning)  
+        { 
+            Start();
+            IsRunning = true;
+        }
+        
+        _ctrlHolder.Add(ctrl);
+    }
+    
     private static async Task ListenAsync(CancellationToken cancellationToken)
     {
         ConsoleKey key;
@@ -22,12 +44,12 @@ public static class KeyboardInput
         }
     }
 
-    public static void Start()
+    private static void Start()
     {
         Task.Run(() => ListenAsync(_cancellationTokenSource.Token));
     }
 
-    public static void Stop()
+    private static void Stop()
     {
         _cancellationTokenSource.Cancel();
     }

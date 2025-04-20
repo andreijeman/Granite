@@ -10,28 +10,36 @@ public class ControllerHolder : Controller
     private Controller? _currentCtrl;
     private int _currentCtrlIndex = -1;
 
-    private ConsoleKey _focusKey = ConsoleKey.Enter;
-    private ConsoleKey _exitKey = ConsoleKey.Escape;
+    protected bool _isSelected = false;
+    
+    private ConsoleKey _selectKey = ConsoleKey.Enter;
+    private ConsoleKey _exitKey = ConsoleKey.Q;
     private ConsoleKey _nextKey = ConsoleKey.Tab;
 
     public ControllerHolder()
     {
-        _isFocused = true;
-        
-        AddKeyAction(_focusKey, OnFocusKey);
+        AddKeyAction(_selectKey, OnSelectKey);
         AddKeyAction(_exitKey, OnExitKey);
         AddKeyAction(_nextKey, OnNextKey);
     }
 
     public override void OnKeyPressed(ConsoleKey key)
     {
-        if (_isFocused) base.OnKeyPressed(key);
-        _currentCtrl?.OnKeyPressed(key);
+        if (_currentCtrl is ControllerHolder holder)
+        { 
+            if(holder._isSelected) _currentCtrl.OnKeyPressed(key);
+            else base.OnKeyPressed(key);
+        }
+        else
+        {
+            base.OnKeyPressed(key);
+            if(key != _nextKey && key != _exitKey) _currentCtrl?.OnKeyPressed(key);
+        }
     }
-    private void OnFocusKey()
+    private void OnSelectKey()
     {
-        if(_parent is not null) _parent.IsFocused = false;
-        _isFocused = true;
+        if(_currentCtrl is ControllerHolder holder)
+            holder._isSelected = true;
     }
 
     private void OnExitKey()
@@ -40,11 +48,7 @@ public class ControllerHolder : Controller
         _currentCtrl = null;
         _currentCtrlIndex = -1;
         
-        if (_parent is not null)
-        {
-            _isFocused = false;
-            _parent.IsFocused = true;
-        }
+        _isSelected = false;
     }
 
     private void OnNextKey()
@@ -62,15 +66,7 @@ public class ControllerHolder : Controller
         if (!_controllers.Contains(ctrl))
         {
             _controllers.Add(ctrl);
-        }
-    }
-    public void Add(ControllerHolder holder)
-    {
-        if (!_controllers.Contains(holder))
-        {
-            _controllers.Add(holder);
-            holder.Parent = this;
-            holder.IsFocused = false;
+            if (ctrl is ControllerHolder holder) holder.Parent = this;
         }
     }
 
@@ -78,12 +74,12 @@ public class ControllerHolder : Controller
 
     public ConsoleKey SelectKey
     {
-        get => _focusKey;
+        get => _selectKey;
         set
         {
-            RemoveKeyAction(_focusKey, OnFocusKey);
-            _focusKey = value;
-            AddKeyAction(_focusKey, OnNextKey);
+            RemoveKeyAction(_selectKey, OnSelectKey);
+            _selectKey = value;
+            AddKeyAction(_selectKey, OnNextKey);
         }
     }
 

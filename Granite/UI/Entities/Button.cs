@@ -19,32 +19,20 @@ public class Button : Entity
         _textColor = args.TextColor;
         _text = args.Text;
         
-        SculptModel();
+        GObject.Model 
+            .FillBackground(_color)
+            .InsertTextCentered(_text, _textColor);
     }
     
-    protected override void SculptModel()
+    protected override void OnFocused()
     {
-        if (IsFocused)
-        {
-            GObject.Model
-                .FillBackground(_focusedColor)
-                .InsertTextCentered(_text, _textColor);
-        }
-        else
-        {
-            GObject.Model 
-                .FillBackground(_color)
-                .InsertTextCentered(_text, _textColor);
-        }
+        GObject.Model.FillBackground(_focusedColor);
+        GObject.Draw();
     }
 
-    protected override void OnFocused(bool isFocused)
+    protected override void OnUnfocused()
     {
-        if (isFocused)
-            GObject.Model.FillBackground(_focusedColor);
-        else
-            GObject.Model.FillBackground(_color);
-
+        GObject.Model.FillBackground(_color);
         GObject.Draw();
     }
 }

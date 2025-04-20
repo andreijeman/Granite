@@ -16,6 +16,7 @@ public static class ConsoleOutput
     static ConsoleOutput()
     {
         _frame.DrawRequested += OnDrawRequested;
+        Console.CursorVisible = false;
         Task.Run(OnBufferSizeChanged);
     }
 

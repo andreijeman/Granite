@@ -46,6 +46,19 @@ public static class ModelBuilder
 
         return model;
     }
+    
+    public static Model FillBackground(this Model model, Color color)
+    {
+        for (int i = 0; i < model.Height; i++)
+        {
+            for (int j = 0; j < model.Width; j++)
+            {
+                model.Data[i, j].Background = color;
+            }
+        }
+
+        return model;
+    }
 
     public static Model DrawChessboard(this Model model, Color color1, Color color2)
     {
@@ -63,5 +76,48 @@ public static class ModelBuilder
         }
 
         return model;
+    }
+
+    public static Model InsertTextCentered(this Model model, string text, Color color)
+    {
+        var rect = GetCenteredInnerBox(model.Width, model.Height, text.Length);
+
+        int index = 0;
+        for (int i = rect.Y1; i <= rect.Y2; i++)
+        {
+            while(text[index] == ' ') index++;
+            
+            for (int j = rect.X1; j <= rect.X2; j++)
+            {
+                if (index >= text.Length) goto End; 
+                model.Data[i, j].Character = text[index++];
+                model.Data[i, j].Foreground = color;
+            }
+        }
+        
+        End:
+        
+        return model;
+    }
+    
+    private static Rect GetCenteredInnerBox(int outerWidth, int outerHeight, int innerArea)
+    {
+        if(innerArea >= outerWidth * outerHeight) 
+            return new Rect(0, 0, outerWidth - 1, outerHeight - 1);
+        
+        double ratio = outerWidth / outerHeight;
+        int h = (int)Math.Ceiling((Math.Sqrt(innerArea / ratio)));
+        int w = (int)Math.Ceiling( h * ratio);
+        
+        int x = (outerWidth - w) / 2;
+        int y = (outerHeight - h) / 2;
+
+        return new Rect
+        {
+            X1 = x,
+            Y1 = y,
+            X2 = x + w,
+            Y2 = y + h
+        };
     }
 }

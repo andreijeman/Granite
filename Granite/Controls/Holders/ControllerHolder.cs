@@ -7,10 +7,8 @@ public class ControllerHolder : Controller
     private ControllerHolder? _parent;
     private List<Controller> _controllers = new();
 
-    private Controller _currentCtrl = new();
+    private Controller? _currentCtrl;
     private int _currentCtrlIndex = -1;
-
-    private bool _isFocused;
 
     private ConsoleKey _focusKey = ConsoleKey.Enter;
     private ConsoleKey _exitKey = ConsoleKey.Escape;
@@ -18,6 +16,8 @@ public class ControllerHolder : Controller
 
     public ControllerHolder()
     {
+        _isFocused = true;
+        
         AddKeyAction(_focusKey, OnFocusKey);
         AddKeyAction(_exitKey, OnExitKey);
         AddKeyAction(_nextKey, OnNextKey);
@@ -28,26 +28,33 @@ public class ControllerHolder : Controller
         if (_isFocused) base.OnKeyPressed(key);
         _currentCtrl?.OnKeyPressed(key);
     }
-    protected void OnFocusKey()
+    private void OnFocusKey()
     {
-        _parent?.Focus(false);
+        if(_parent is not null) _parent.IsFocused = false;
         _isFocused = true;
     }
 
-    protected void OnExitKey()
+    private void OnExitKey()
     {
-        _isFocused = false;
-        _parent?.Focus(true);
+        _currentCtrl?.OnFocused(false);
+        _currentCtrl = null;
+        _currentCtrlIndex = -1;
+        
+        if (_parent is not null)
+        {
+            _isFocused = false;
+            _parent.IsFocused = true;
+        }
     }
 
-    protected void OnNextKey()
+    private void OnNextKey()
     {
         if (_currentCtrlIndex < _controllers.Count - 1) _currentCtrlIndex++;
         else _currentCtrlIndex = 0;
 
-        _currentCtrl.OnSelected(false);
+        _currentCtrl?.OnFocused(false);
         _currentCtrl = _controllers[_currentCtrlIndex];
-        _currentCtrl.OnSelected(true);
+        _currentCtrl.OnFocused(true);
     }
 
     public void Add(Controller ctrl)
@@ -63,12 +70,11 @@ public class ControllerHolder : Controller
         {
             _controllers.Add(holder);
             holder.Parent = this;
+            holder.IsFocused = false;
         }
     }
 
     public ControllerHolder? Parent { get => _parent; set => _parent = value; }
-    public void Focus(bool isFocused) => _isFocused = isFocused;
-
 
     public ConsoleKey SelectKey
     {

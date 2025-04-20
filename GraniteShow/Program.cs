@@ -1,76 +1,54 @@
-﻿using Granite.Graphics.Components;
+﻿using Granite.Controls.Holders;
+using Granite.Graphics.Components;
 using Granite.Graphics.Frames;
-using Granite.Graphics.Objects;
 using Granite.Graphics.Utilities;
 using Granite.IO;
+using Granite.UI.Entities;
+using Granite.UI.Entities.Args;
 
-Console.CursorVisible = false;
+KeyboardInput.Start();
 
-Frame frame = new Frame
+var ctrlHolder = new ControllerHolder();
+KeyboardInput.KeyPressed += ctrlHolder.OnKeyPressed; 
+
+var frame = new Frame()
 {
-    Model = new Model(64, 32).Init().DrawChessboard(new Color("808080"), new Color("E0E0E0"))
+    Model = new Model(40, 20).Init().DrawChessboard(new Color("404040"), new Color("C0C0C0"))
 };
+ConsoleOutput.Add(frame);
 
-GObject obj = new GObject
+
+var btn = new Button(new ButtonArgs
 {
-    Model = new Model(4, 2).Init().DrawChessboard(new Color("FF3399"), new Color("FF66B2")),
     Left = 2,
     Top = 2,
-};
+    Width = 4,
+    Height = 4,
+    Color = new Color("FF33FF"),
+    FocusedColor = new Color("0080FF"),
+    Text = "This is a button",
+    keyActionDict = { { ConsoleKey.Enter, () => Console.WriteLine("Entered!") } }
+});
 
-var rnd = new Random();
-
-int n = 20;
-for(int i = 0; i < n; i++)
+var btn2 = new Button(new ButtonArgs
 {
-    frame.Add(new GObject
-    {
-        Model = new Model(rnd.Next(16), rnd.Next(8))
-            .Init()
-            .Fill(new Color($"{rnd.Next(111111, 999999)}")),
-        Left = rnd.Next(frame.Width),
-        Top = rnd.Next(frame.Height),
-    });
+    Left = 7,
+    Top = 2,
+    Width = 4,
+    Height = 4,
+    Color = new Color("FF33FF"),
+    FocusedColor = new Color("0080FF"),
+    Text = "This is a button",
+    keyActionDict = { { ConsoleKey.Enter, () => Console.WriteLine("Entered!") } }
+});
 
-}
-
-ConsoleOutput.Add(frame);
-frame.Add(obj);
+frame.Add(btn.GObject);
+frame.Add(btn2.GObject);
+ctrlHolder.Add(btn.Controller);
+ctrlHolder.Add(btn2.Controller);
 frame.Draw();
 
-    
-var target = frame;
+await Task.Delay(100000);
 
-while (true)
-{
-      var key = Console.ReadKey(true).Key;
 
-    switch(key)
-    {
-        case ConsoleKey.UpArrow:
-            target.Top--;
-            break;
-        case ConsoleKey.DownArrow:
-            target.Top++;
-            break;
-        case ConsoleKey.LeftArrow:
-            target.Left--;
-            break;
-        case ConsoleKey.RightArrow:
-            target.Left++;
-            break;
-        case ConsoleKey.Q:
-            target.Model = new Model(target.Width + 1, target.Height).Init().DrawChessboard(new Color("FF3399"), new Color("FF66B2"));
-            break;
-        case ConsoleKey.W:
-            target.Model = new Model(target.Width - 1, target.Height).Init().DrawChessboard(new Color("FF3399"), new Color("FF66B2"));
-            break;
-        case ConsoleKey.A:
-            frame.BringForward(target);
-            break;
-        case ConsoleKey.S:
-            frame.SendBackward(target);
-            break;
-        default: break;
-    }
-}
+Console.ReadKey();

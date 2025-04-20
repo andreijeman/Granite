@@ -1,6 +1,6 @@
 ﻿namespace Granite.IO;
 
-public static class ConsoleKeyListener
+public static class KeyboardInput
 {
     public static event Action<ConsoleKey>? KeyPressed;
 

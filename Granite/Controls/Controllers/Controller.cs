@@ -4,7 +4,8 @@ namespace Granite.Controls.Controllers;
 public class Controller 
 {
     protected Dictionary<ConsoleKey, Action?> _keyActionDict = new();
-    public event Action<bool>? Selected;
+    public event Action<bool>? Focused;
+    protected bool _isFocused;
 
     public virtual void OnKeyPressed(ConsoleKey key)
     {
@@ -14,7 +15,11 @@ public class Controller
         }
     }
 
-    public virtual void OnSelected(bool isSelected) => Selected?.Invoke(isSelected);
+    public virtual void OnFocused(bool isFocused)
+    {
+        _isFocused = isFocused;
+        Focused?.Invoke(isFocused);
+    }
 
     public void AddKeyAction(ConsoleKey key, Action action)
     {
@@ -39,4 +44,6 @@ public class Controller
             _keyActionDict.Remove(key);
         }
     }
+    
+    public bool IsFocused { get => _isFocused; protected set => _isFocused = value; }
 }

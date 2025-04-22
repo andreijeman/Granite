@@ -9,9 +9,9 @@ namespace Granite.IO;
 
 public static class ConsoleOutput 
 {
-    private static object _locker = new();
+    private static readonly Lock _locker = new();
     
-    private static Frame _frame = new();
+    private static readonly Frame _frame = new();
     
     static ConsoleOutput()
     {
@@ -63,7 +63,7 @@ public static class ConsoleOutput
                     Console.Write(result);
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 //Console.WriteLine(ex.Message);
             }

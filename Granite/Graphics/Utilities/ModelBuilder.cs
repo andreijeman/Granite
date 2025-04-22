@@ -132,8 +132,8 @@ public static class ModelBuilder
         int h = (int)Math.Ceiling((Math.Sqrt(innerArea / ratio)));
         int w = (int)Math.Ceiling( h * ratio);
         
-        int x = (outerWidth - w) / 2;
-        int y = (outerHeight - h) / 2;
+        int x = (outerWidth - (w - 1)) / 2;
+        int y = (outerHeight - (h - 1)) / 2;
 
         return new Rect
         {
@@ -202,8 +202,8 @@ public static class ModelBuilder
 
     public static class Assets
     {
-        public static Border LineBorder = new Border('│', '─', '│', '─', '┌', '┐', '┘', '└');
-        public static Border DoubleLineBorder = new Border('║', '═', '║', '═', '╔', '╗', '╝', '╚');
-        public static Border FatBorder = new Border('█', '▀', '█', '▄', '█', '█', '█', '█');
+        public static readonly Border LineBorder = new Border('│', '─', '│', '─', '┌', '┐', '┘', '└');
+        public static readonly Border DoubleLineBorder = new Border('║', '═', '║', '═', '╔', '╗', '╝', '╚');
+        public static readonly Border FatBorder = new Border('█', '▀', '█', '▄', '█', '█', '█', '█');
     }
 }

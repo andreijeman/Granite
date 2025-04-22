@@ -1,5 +1,4 @@
-﻿using Granite.Controls.Controllers;
-using Granite.Controls.Holders;
+﻿using Granite.Controllers;
 
 namespace Granite.IO;
 
@@ -14,7 +13,7 @@ public static class KeyboardInput
     static KeyboardInput()
     {
         KeyPressed += _ctrlHolder.OnKeyPressed;
-        _ctrlHolder.OnFocused(true);   
+        _ctrlHolder.OnFocused(true);  
     }
 
     public static void Bind(Controller ctrl)

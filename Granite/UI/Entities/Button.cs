@@ -1,8 +1,8 @@
-﻿using Granite.Controls.Controllers;
+﻿using Granite.Controllers;
 using Granite.Graphics.Components;
 using Granite.Graphics.Objects;
 using Granite.Graphics.Utilities;
-using Granite.UI.Entities.Args;
+using Granite.UI.EntitiesArgs;
 
 namespace Granite.UI.Entities;
 
@@ -16,7 +16,7 @@ public class Button : Entity
 
     public Button(ButtonArgs args) : base(new GObject(), new Controller(), args)
     {
-        _color = args.Color;
+        _color = args.IdleColor;
         _focusedColor = args.FocusedColor;
         _textColor = args.TextColor;
         _text = args.Text;
@@ -24,6 +24,8 @@ public class Button : Entity
         GObject.Model 
             .FillBackground(_color)
             .InsertTextCentered(_text, _textColor);
+        
+        if(args.OnPressed != null) Controller.AddKeyAction(ConsoleKey.Enter, args.OnPressed);
     }
     
     protected override void OnFocused()

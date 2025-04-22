@@ -1,11 +1,11 @@
 ﻿using System.Text;
-using Granite.Controls.Controllers;
+using Granite.Controllers;
 using Granite.Graphics.Components;
 using Granite.Graphics.Frames;
 using Granite.Graphics.Maths;
 using Granite.Graphics.Objects;
 using Granite.Graphics.Utilities;
-using Granite.UI.Entities.Args;
+using Granite.UI.EntitiesArgs;
 
 namespace Granite.UI.Entities;
 
@@ -56,7 +56,7 @@ public class TextBox : Entity
         AddText(args.Text);
         
         Controller.AddKeyAction(ConsoleKey.UpArrow, () => { if(_frame.OriginTop > 0) _frame.OriginTop--; });
-        Controller.AddKeyAction(ConsoleKey.DownArrow, () => { if(_frame.OriginTop < _chunk.Top - 2) _frame.OriginTop++; });
+        Controller.AddKeyAction(ConsoleKey.DownArrow, () => { if(_frame.OriginTop < _chunk.Top + _chunkY - 2) _frame.OriginTop++; });
     }
     
     protected override void OnFocused()
@@ -88,25 +88,28 @@ public class TextBox : Entity
         _text.Append(text);
         
         int index = 0;
-        int i, j = 0;
         
-        for (i = _chunkY; i < _chunk.Height; i++)
+        for (; _chunkY < _chunk.Height; _chunkY++)
         {
-            while(index < text.Length && text[index] == ' ') index++;
-            
-            for (j = _chunkX; j < _chunk.Width; j++)
+            for (; _chunkX < _chunk.Width; _chunkX++)
             {
                 if (index >= text.Length) goto End; 
-                _chunk.Model.Data[i, j].Character = text[index++];;
+                _chunk.Model.Data[_chunkY, _chunkX].Character = text[index++];;
+                _chunk.Draw(new Rect(_chunkX, _chunkY, _chunkX, _chunkY));
             }
+
+            _chunkX = 0;
         }
         
         End:
+
+        if (_chunkX == _chunk.Width)
+        {
+            _chunkX = 0;
+            _chunkY++;
+        }
         
-        _chunkY = i;
-        _chunkX = j;
-        
-        if (index < text.Length - 1)
+        if (index < text.Length - 1 || _chunkY == _chunk.Height)
         {
             _chunkX = _chunkY = 0;
             _chunk = GetNewTextChunk();
@@ -115,6 +118,23 @@ public class TextBox : Entity
             
             AddText(text.Substring(index));
         }
+    }
+
+    public void Clear()
+    {
+        foreach (var chunk in _chunks)
+        {
+            _frame.Remove(chunk);
+        }
+        
+        _chunks.Clear();
+        _chunkX = _chunkY = 0;
+        _frame.OriginLeft = _frame.OriginTop = 0;
+        _text.Clear();
+        
+        _chunk = GetNewTextChunk();
+        _frame.Add(_chunk);
+        _chunks.Add(_chunk);
     }
     
     private GObject GetNewTextChunk()

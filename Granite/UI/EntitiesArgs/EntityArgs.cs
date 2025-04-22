@@ -1,4 +1,4 @@
-﻿namespace Granite.UI.Entities.Args;
+﻿namespace Granite.UI.EntitiesArgs;
 
 public class EntityArgs
 {

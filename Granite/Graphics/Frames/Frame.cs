@@ -82,7 +82,20 @@ public class Frame : GObject
 
             obj.DrawRequested += OnDrawRequested;
             obj.LayoutChanged += OnLayoutChanged;
+            
+            obj.Draw();
         }
+    }
+
+    public void Remove(GObject obj)
+    {
+        obj.DrawRequested -= OnDrawRequested;
+        obj.LayoutChanged -= OnLayoutChanged;
+        
+        DrawFrameRect(_objectRectDict[obj]);
+        
+        _objects.Remove(obj);
+        _objectRectDict.Remove(obj);    
     }
 
     public void BringForward(GObject obj)

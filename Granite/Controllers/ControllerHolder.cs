@@ -1,6 +1,4 @@
-﻿using Granite.Controls.Controllers;
-
-namespace Granite.Controls.Holders;
+﻿namespace Granite.Controllers;
 
 public class ControllerHolder : Controller
 {

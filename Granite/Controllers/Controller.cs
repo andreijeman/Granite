@@ -1,5 +1,4 @@
-﻿
-namespace Granite.Controls.Controllers;
+﻿namespace Granite.Controllers;
 
 public class Controller 
 {

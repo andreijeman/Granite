@@ -1,17 +1,16 @@
-﻿using Granite.Controls.Controllers;
-using Granite.Controls.Holders;
+﻿using Granite.Controllers;
 using Granite.Graphics.Components;
 using Granite.Graphics.Frames;
 using Granite.Graphics.Maths;
 using Granite.Graphics.Objects;
 using Granite.Graphics.Utilities;
-using Granite.UI.Entities.Args;
+using Granite.UI.EntitiesArgs;
 
 namespace Granite.UI.Entities;
 
 public class Container : Entity
 {
-    public readonly Frame _frame;
+    protected readonly Frame _frame;
     protected readonly ControllerHolder _ctrlHolder;
     
     protected Color _idleColor;
@@ -76,10 +75,5 @@ public class Container : Entity
         GObject.Draw(new Rect(0, 0, 0, GObject.Height - 1));
         GObject.Draw(new Rect(GObject.Width - 1, 0, GObject.Width - 1, GObject.Height - 1));
         GObject.Draw(new Rect(0, GObject.Height - 1, GObject.Width - 1, GObject.Height - 1));
-    }
-
-    public void Show()
-    {
-        GObject.Draw();
     }
 }

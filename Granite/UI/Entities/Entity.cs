@@ -1,8 +1,8 @@
-﻿using Granite.Controls.Controllers;
+﻿using Granite.Controllers;
 using Granite.Graphics.Components;
 using Granite.Graphics.Objects;
 using Granite.Graphics.Utilities;
-using Granite.UI.Entities.Args;
+using Granite.UI.EntitiesArgs;
 
 namespace Granite.UI.Entities;
 

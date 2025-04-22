@@ -1,4 +1,6 @@
-﻿using Granite.Graphics.Components;
+﻿using Granite.Controls.Controllers;
+using Granite.Graphics.Components;
+using Granite.Graphics.Objects;
 using Granite.Graphics.Utilities;
 using Granite.UI.Entities.Args;
 
@@ -12,7 +14,7 @@ public class Button : Entity
     private Color _textColor;
     private String _text;
 
-    public Button(ButtonArgs args) : base(args)
+    public Button(ButtonArgs args) : base(new GObject(), new Controller(), args)
     {
         _color = args.Color;
         _focusedColor = args.FocusedColor;

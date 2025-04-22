@@ -1,6 +1,8 @@
-﻿using Granite.Controls.Holders;
+﻿using Granite.Controls.Controllers;
+using Granite.Controls.Holders;
 using Granite.Graphics.Components;
 using Granite.Graphics.Frames;
+using Granite.Graphics.Maths;
 using Granite.Graphics.Objects;
 using Granite.Graphics.Utilities;
 using Granite.UI.Entities.Args;
@@ -9,57 +11,75 @@ namespace Granite.UI.Entities;
 
 public class Container : Entity
 {
-    public Frame Frame { get; } = new();
-    public ControllerHolder CtrlHolder { get; } = new();
+    public readonly Frame _frame;
+    protected readonly ControllerHolder _ctrlHolder;
     
-    private Color _bgColor;
-    private Color _bgFocusedColor;
+    protected Color _idleColor;
+    protected Color _focusedColor;
     
-    public Container(ContainerArgs args) : base(args)
+    public Container(ContainerArgs args) : base(new Frame(), new ControllerHolder(), args)
     {
-        CtrlHolder.Focused += (isFocused) =>
+        var mainFrame = (Frame)this.GObject ;
+        _ctrlHolder = (ControllerHolder)this.Controller;
+        
+        _idleColor = args.IdleColor;
+        _focusedColor = args.FocusedColor;
+        
+        mainFrame.Model = new Model(args.Width, args.Height)
+            .Init()
+            .FillBackground(args.BackgroundCOlor)
+            .DrawBorder(args.Border, _idleColor);
+
+        _frame = new Frame
         {
-            if (isFocused) OnFocused();
-            else OnUnfocused();
-        }; 
+            Left = 1,
+            Top = 1,
+            Model = new Model(args.Width - 2, args.Height - 2)
+                .Init()
+                .FillBackground(args.BackgroundCOlor)
+        };
         
-        base.GObject = Frame;
-        base.Controller = CtrlHolder;
-        
-        _bgColor = args.Backgound;
-        _bgFocusedColor = args.BackgroundFocused;
-        
-        Frame.Model = new Model(args.Width, args.Height).Init();
-        Frame.Model.FillBackground(_bgColor);
+        mainFrame.Add(_frame);
     }
 
-    protected override void OnFocused()             
+    protected override void OnFocused()
     {
-        Frame.Model.FillBackground(_bgFocusedColor);
-        Frame.DrawBackground();
+        DrawFrameBorder(_focusedColor);
     }
 
     protected override void OnUnfocused()
     {
-        Frame.Model.FillBackground(_bgColor);
-        Frame.DrawBackground();
+        DrawFrameBorder(_idleColor);
     }
     
 
     public void Add(Entity entity)
     {
-        Frame.Add(entity.GObject);
-        CtrlHolder.Add(entity.Controller);
+        _frame.Add(entity.GObject);
+        _ctrlHolder.Add(entity.Controller);
     }
     
-    public void Add(Container container)
-    {
-        Frame.Add(container.Frame);
-        CtrlHolder.Add(container.CtrlHolder);
-    }
-
     public void Add(GObject obj)
     {
-        Frame.Add(obj);
+        _frame.Add(obj);
+    }
+
+    private void DrawFrameBorder(Color color)
+    {
+        GObject.Model
+            .FillForeground(color, new Rect(0, 0, GObject.Width - 1, 0))
+            .FillForeground(color, new Rect(0, 0, 0, GObject.Height - 1))
+            .FillForeground(color, new Rect(GObject.Width - 1, 0, GObject.Width - 1, GObject.Height - 1))
+            .FillForeground(color, new Rect(0, GObject.Height - 1, GObject.Width - 1, GObject.Height - 1));
+        
+        GObject.Draw(new Rect(0, 0, GObject.Width - 1, 0));
+        GObject.Draw(new Rect(0, 0, 0, GObject.Height - 1));
+        GObject.Draw(new Rect(GObject.Width - 1, 0, GObject.Width - 1, GObject.Height - 1));
+        GObject.Draw(new Rect(0, GObject.Height - 1, GObject.Width - 1, GObject.Height - 1));
+    }
+
+    public void Show()
+    {
+        GObject.Draw();
     }
 }

@@ -13,7 +13,7 @@ public class ControllerHolder : Controller
     protected bool _isSelected = false;
     
     private ConsoleKey _selectKey = ConsoleKey.Enter;
-    private ConsoleKey _exitKey = ConsoleKey.Q;
+    private ConsoleKey _exitKey = ConsoleKey.Escape;
     private ConsoleKey _nextKey = ConsoleKey.Tab;
 
     public ControllerHolder()
@@ -23,7 +23,7 @@ public class ControllerHolder : Controller
         AddKeyAction(_nextKey, OnNextKey);
     }
 
-    public override void OnKeyPressed(ConsoleKey key)
+    public override void OnKeyPressed(ConsoleKeyInfo key)
     {
         if (_currentCtrl is ControllerHolder holder)
         { 
@@ -33,7 +33,7 @@ public class ControllerHolder : Controller
         else
         {
             base.OnKeyPressed(key);
-            if(key != _nextKey && key != _exitKey) _currentCtrl?.OnKeyPressed(key);
+            if(key.Key != _nextKey && key.Key != _exitKey) _currentCtrl?.OnKeyPressed(key);
         }
     }
     private void OnSelectKey()

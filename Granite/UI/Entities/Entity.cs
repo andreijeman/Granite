@@ -8,11 +8,14 @@ namespace Granite.UI.Entities;
 
 public abstract class Entity
 {
-    public GObject GObject { get; protected set; } = new();
-    public Controller Controller { get; protected set; } = new();
+    public readonly GObject GObject;
+    public readonly Controller Controller;
     
-    public Entity(EntityArgs args)
+    public Entity(GObject obj, Controller ctrl, EntityArgs args)
     {
+        GObject = obj;
+        Controller = ctrl;
+        
         Controller.Focused += (isFocused) =>
         {
             if (isFocused) OnFocused();

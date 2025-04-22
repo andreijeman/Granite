@@ -5,9 +5,9 @@ namespace Granite.UI.Utilities;
 
 public static class ContainerExtensions
 {
-    public static void BindToIO(this Container container)
+    public static void BindIO(this Container container)
     {
-        ConsoleOutput.Bind(container.Frame);
-        KeyboardInput.Bind(container.CtrlHolder); 
+        ConsoleOutput.Bind(container.GObject);
+        KeyboardInput.Bind(container.Controller); 
     }
 }

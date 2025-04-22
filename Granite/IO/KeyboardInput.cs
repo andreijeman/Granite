@@ -7,7 +7,7 @@ public static class KeyboardInput
 {
     public static bool IsRunning { get; private set; } = false;
     private static ControllerHolder _ctrlHolder = new();
-    private static event Action<ConsoleKey>? KeyPressed;
+    private static event Action<ConsoleKeyInfo>? KeyPressed;
 
     private static readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
@@ -30,13 +30,13 @@ public static class KeyboardInput
     
     private static async Task ListenAsync(CancellationToken cancellationToken)
     {
-        ConsoleKey key;
+        ConsoleKeyInfo key;
 
         while (!cancellationToken.IsCancellationRequested)
         {
             if (Console.KeyAvailable)
             {
-                key = Console.ReadKey(intercept: true).Key;
+                key = Console.ReadKey(intercept: true);
                 KeyPressed?.Invoke(key);   
             }
 

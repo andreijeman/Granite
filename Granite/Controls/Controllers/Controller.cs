@@ -4,14 +4,18 @@ namespace Granite.Controls.Controllers;
 public class Controller 
 {
     protected Dictionary<ConsoleKey, Action?> _keyActionDict = new();
+    public Action<ConsoleKeyInfo>? KeyPressed;
+    
     public event Action<bool>? Focused;
-    protected bool _isFocused = false;
+    protected bool _isFocused;
 
-    public virtual void OnKeyPressed(ConsoleKey key)
+    public virtual void OnKeyPressed(ConsoleKeyInfo key)
     {
-        if (_keyActionDict.ContainsKey(key))
+        KeyPressed?.Invoke(key);
+        
+        if (_keyActionDict.ContainsKey(key.Key))
         {
-            _keyActionDict[key]?.Invoke();
+            _keyActionDict[key.Key]?.Invoke();
         }
     }
 

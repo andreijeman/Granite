@@ -53,6 +53,7 @@ public class Frame : GObject
         set
         {
             _originLeft = value;
+            _mainRect = GetMainRect(this);
             Draw();
         }
     }
@@ -63,6 +64,7 @@ public class Frame : GObject
         set
         {
             _originTop = value;
+            _mainRect = GetMainRect(this);
             Draw();
         }
     }
@@ -197,7 +199,6 @@ public class Frame : GObject
 
         var rects = GetObjectDrawableRects(this, rect);
         DrawModelRects(rects, _model, _originLeft, _originTop);
-
     }
 
     private static Rect GetObjectRect(GObject obj)

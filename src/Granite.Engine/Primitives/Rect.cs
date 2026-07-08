@@ -98,6 +98,6 @@ public readonly record struct Rect
 
     public Rect Translate(Point offset) => new(P1.Translate(offset), P2.Translate(offset));
 
-    public Rect ChangeOrigin(Point oldOrigin, Point newOrigin) =>
+    public Rect Rebase(Point oldOrigin, Point newOrigin) =>
         new(P1.Rebase(oldOrigin, newOrigin), P2.Rebase(oldOrigin, newOrigin));
 }

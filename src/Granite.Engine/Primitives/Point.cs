@@ -19,5 +19,5 @@ public readonly record struct Point
 
     public Rect ToRect(Size size) => new(this, size);
     public Point Translate(Point offset) => this + offset;
-    public Point Rebase(Point oldOrigin, Point newOrigin) => this + oldOrigin - newOrigin;
+    public Point Rebase(Point oldOrigin, Point newOrigin) => this + newOrigin - oldOrigin;
 }
